@@ -1,0 +1,17 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush 
+        x:Key="BackgroundP"
+        Color="Black">
+    </SolidColorBrush>
+    <Color x:Key="BackgroundPC">
+        Black
+    </Color>
+    <SolidColorBrush 
+        x:Key="BackgroundS"
+        Color="White">
+    </SolidColorBrush>
+    <Color x:Key="BackgroundSC">
+        White
+    </Color>
+</ResourceDictionary>
