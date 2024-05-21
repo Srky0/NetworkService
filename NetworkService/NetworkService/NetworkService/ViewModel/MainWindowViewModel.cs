@@ -136,8 +136,8 @@ namespace NetworkService.ViewModel
                                     //sw.WriteLine(dt + "; " + splited[0] + ", " + splited[1]);
 
                                 int id = Int32.Parse(splited[0].Split('_')[1]);
-                                NetworkEntityViewModel.NetowrkEntities[id].LastValue = Double.Parse(splited[1]);
-                                NetworkEntityViewModel.NetowrkEntities[id].Value.Add(Double.Parse(splited[1]));
+                                NetworkEntityViewModel.NetowrkEntities[id].LastValue = Math.Round(Double.Parse(splited[1]), 2);
+                                NetworkEntityViewModel.NetowrkEntities[id].Value.Add(Math.Round(Double.Parse(splited[1]), 2));
                                 //Console.WriteLine(splited);
                                 //OnPropertyChanged(nameof(NetworkEntityViewModel.NetowrkEntities));
                                 //OnPropertyChanged(nameof(measurementGraph));

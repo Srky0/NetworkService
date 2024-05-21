@@ -183,11 +183,11 @@ namespace NetworkService.ViewModel
                             {
                                 ResetEntity();
                             }
-                            else if (typeSaved.Equals(item.Type.ToString()))
+                            else
                             {
                                 foreach (var entity in MainWindowViewModel.entities)
                                 {
-                                    if (type.Equals(item.Type.ToString()))
+                                    if (typeSaved.Equals(entity.Type.ToString()))
                                     {
                                         MainWindowViewModel.Filter_entities.Add(entity);
                                     }
