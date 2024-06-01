@@ -297,36 +297,26 @@
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"/>
 
-                <ComboBox
-                    x:Name="TypeComboBoxF"
-                    SelectedItem="{Binding SelectedTypeFilter}"
-                    Foreground="Black"
-                    Grid.Row="3"
-                    Grid.Column="1"
-                    Margin="5 5 5 10"
-                    Background="#BBBBBB"
-                    FontSize="24"
-                    HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Center">
-                    <ComboBoxItem 
-                        Content="All"          
-                        FontSize="24"
-                        Foreground="Black"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        IsSelected="True"/>
-                    <ComboBoxItem 
-                        Content="Interval_Meter"          
-                        FontSize="24"
-                        Foreground="Black"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"/>
-                    <ComboBoxItem 
-                        Content="Smart_Meter"
-                        FontSize="24"
-                        Foreground="Black"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"/>
+                <ComboBox x:Name="TypeListBox"
+                          ItemsSource="{Binding FilterOptions}"
+                          SelectedItem="{Binding SelectedTypeFilter}"
+                          Foreground="Black"
+                          Grid.Row="3"
+                          Grid.Column="1"
+                          Margin="5 5 5 10"
+                          Background="#BBBBBB"
+                          FontSize="24"
+                          HorizontalContentAlignment="Center"
+                          VerticalContentAlignment="Center">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}"
+                                       FontSize="24"
+                                       Foreground="Black"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
                 </ComboBox>
 
                 <Button

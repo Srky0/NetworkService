@@ -178,5 +178,70 @@
             
         </Canvas>
 
+        <Grid Grid.Row="3"
+              Margin="5,0,5,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox
+                x:Name="TimeLine_TextBox1"
+                Margin="20,5,20,100"
+                Background="#323232"
+                Foreground="White"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                IsEnabled="False"
+                Text="{Binding TimeLine_TextBox1}"/>
+            <TextBox
+                x:Name="TimeLine_TextBox2"
+                Grid.Column="1"
+                Margin="20,5,20,100"
+                Background="#323232"
+                Foreground="White"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                IsEnabled="False"
+                Text="{Binding TimeLine_TextBox2}"/>
+            <TextBox
+                x:Name="TimeLine_TextBox3"
+                Grid.Column="2"
+                Margin="20,5,20,100"
+                Background="#323232"
+                Foreground="White"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                IsEnabled="False"
+                Text="{Binding TimeLine_TextBox3}"/>
+            <TextBox
+                x:Name="TimeLine_TextBox4"
+                Grid.Column="3"
+                Margin="20,5,20,100"
+                Background="#323232"
+                Foreground="White"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                IsEnabled="False"
+                Text="{Binding TimeLine_TextBox4}"/>
+            <TextBox
+                x:Name="TimeLine_TextBox5"
+                Grid.Column="4"
+                Margin="20,5,20,100"
+                Background="#323232"
+                Foreground="White"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                IsEnabled="False"
+                Text="{Binding TimeLine_TextBox5}"/>
+
+
+
+        </Grid>
+        
+        
     </Grid>
 </UserControl>

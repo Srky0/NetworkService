@@ -138,6 +138,10 @@ namespace NetworkService.ViewModel
                                 int id = Int32.Parse(splited[0].Split('_')[1]);
                                 NetworkEntityViewModel.NetowrkEntities[id].LastValue = Math.Round(Double.Parse(splited[1]), 2);
                                 NetworkEntityViewModel.NetowrkEntities[id].Value.Add(Math.Round(Double.Parse(splited[1]), 2));
+                                NetworkEntityViewModel.NetowrkEntities[id].TimelineValues.Add(DateTime.Now.ToString());
+
+                                UpdateCanvasValue(id);
+
                                 //Console.WriteLine(splited);
                                 //OnPropertyChanged(nameof(NetworkEntityViewModel.NetowrkEntities));
                                 //OnPropertyChanged(nameof(measurementGraph));
@@ -156,5 +160,20 @@ namespace NetworkService.ViewModel
             listeningThread.IsBackground = true;
             listeningThread.Start();
         }
+
+
+        public static void UpdateCanvasValue(int id)
+        {
+            int tmpIndex = 0;
+            foreach (var tmp in NetworkDisplayViewModel.IDCanvasCollection)
+            {
+                if (tmp.Equals(id.ToString()))
+                {
+                    NetworkDisplayViewModel.ValueCanvasCollection[tmpIndex] = NetworkEntityViewModel.NetowrkEntities[id].LastValue.ToString();
+                }
+                tmpIndex++;
+            }
+        }
+
     }
 }

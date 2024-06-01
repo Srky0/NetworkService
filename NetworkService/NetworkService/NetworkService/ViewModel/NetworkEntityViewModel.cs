@@ -3,6 +3,7 @@ using NetworkService.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -31,7 +32,9 @@ namespace NetworkService.ViewModel
         private bool _isHigherChecked;
         private ObservableCollection<Entity> _showedCollection;
         private ObservableCollection<Entity> _selectedItems;
+        private List<string> _filterOptions;
 
+        public List<string> FilterOptions { get { return _filterOptions; } set { _filterOptions = value; OnPropertyChanged(nameof(FilterOptions)); } }
         public ObservableCollection<Entity> SelectedItems { get { return _selectedItems; } set { _selectedItems = value; OnPropertyChanged(nameof(SelectedItems)); } }
         public ObservableCollection<Entity> ShowedCollection { get { return _showedCollection; } set { _showedCollection = value; OnPropertyChanged(nameof(ShowedCollection)); } }
         public static ObservableCollection<Entity> NetowrkEntities { get; set; } = MainWindowViewModel.entities;
@@ -56,6 +59,8 @@ namespace NetworkService.ViewModel
 
         public NetworkEntityViewModel()
         {
+            FilterOptions = new List<string> { "All", "Interval_Meter", "Smart_Meter" };
+
             AddCommand = new MyICommand(AddEntity);
 
             DeleteCommand = new MyICommand(DeleteEntity);
@@ -278,7 +283,6 @@ namespace NetworkService.ViewModel
                     {
                         type = "";
                     }
-                    type = type.Split(':')[1].TrimStart();
 
                     if (Regex.IsMatch(IDText, @"^\d+$"))
                     {

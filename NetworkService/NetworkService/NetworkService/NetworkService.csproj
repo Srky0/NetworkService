@@ -144,9 +144,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Resource Include="Imgaes\menu.png" />
+    <Resource Include="Images\Interval_Meter.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Smart_Meter.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

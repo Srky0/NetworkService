@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:NetworkService.Views"
              xmlns:viewModels="clr-namespace:NetworkService.ViewModel"
              xmlns:fa5="http://schemas.fontawesome.com/icons/"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="846" d:DesignWidth="765">
     <Grid>
@@ -22,12 +23,13 @@
                 <RowDefinition Height="50px"/>
             </Grid.RowDefinitions>
 
+
             <TreeView x:Name="TreeView" 
                       Background="#A09D9D" 
                       FontWeight="Bold" 
                       FontSize="24"
                       AllowDrop="True">
-                
+
                 <TreeViewItem Header="Interval Meter"  ItemsSource="{Binding Interval_Meter_entities}">
                     <TreeViewItem.ItemTemplate>
                         <DataTemplate>
@@ -43,7 +45,21 @@
                         </DataTemplate>
                     </TreeViewItem.ItemTemplate>
                 </TreeViewItem>
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectedItemChanged">
+                        <i:InvokeCommandAction 
+                                Command="{Binding SelectionChanged_TreeView}"
+                                CommandParameter="{Binding SelectedItem, ElementName=TreeView}" />
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                        <i:InvokeCommandAction 
+                                Command="{Binding MouseLeftButtonUp_TreeView}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
             </TreeView>
+
 
 
 
@@ -71,9 +87,8 @@
 
         <Canvas 
             Grid.Column="1" 
-            Margin="10,20,10,95"
-            >
-            
+            Margin="10,20,10,95">
+
             <Grid Height="731" Width="530" HorizontalAlignment="Center" VerticalAlignment="Top">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -88,19 +103,703 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Add 12 placeholders -->
-                <Border Grid.Row="0" Grid.Column="0" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20"/>
-                <Border Grid.Row="0" Grid.Column="1" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20"/>
-                <Border Grid.Row="0" Grid.Column="2" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20"/>
-                <Border Grid.Row="1" Grid.Column="0" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20"/>
-                <Border Grid.Row="1" Grid.Column="1" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20"/>
-                <Border Grid.Row="1" Grid.Column="2" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20"/>
-                <Border Grid.Row="2" Grid.Column="0" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20"/>
-                <Border Grid.Row="2" Grid.Column="1" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20"/>
-                <Border Grid.Row="2" Grid.Column="2" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20"/>
-                <Border Grid.Row="3" Grid.Column="0" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20"/>
-                <Border Grid.Row="3" Grid.Column="1" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20"/>
-                <Border Grid.Row="3" Grid.Column="2" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20"/>
+
+                <Border Grid.Row="0" Grid.Column="0" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                    <ContentControl Content="{Binding Path=CanvasCollection[0]}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="0"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="0"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding MouseLeftButtonUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseRightButtonDown">
+                                <i:InvokeCommandAction Command="{Binding RightMouseButtonDownOnCanvas}" CommandParameter="0"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ContentControl>
+
+                </Border>
+
+                <TextBox 
+                    x:Name="IDC0"
+                    Text="{Binding IDCanvasCollection[0]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,20,39,143"
+                    IsEnabled="False"/>
+                <TextBox
+                    x:Name="ValueC0"
+                    Text="{Binding ValueCanvasCollection[0]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,143,20,20"
+                    IsEnabled="False"/>
+
+                <Button 
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Margin="137,20,20,143"
+                    BorderThickness="1"
+                    BorderBrush="#A09D9D"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="0">
+                    <fa5:SvgAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="Black"
+                        Icon="Solid_MinusCircle"
+                        Height="15" Width="15"/>
+                </Button>
+
+                <Border Grid.Row="0" Grid.Column="1" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                    <ContentControl Content="{Binding Path=CanvasCollection[1]}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="1"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="1"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding MouseLeftButtonUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseRightButtonDown">
+                                <i:InvokeCommandAction Command="{Binding RightMouseButtonDownOnCanvas}" CommandParameter="1"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ContentControl>
+                </Border>
+
+                <TextBox 
+                    x:Name="IDC1"
+                    Text="{Binding IDCanvasCollection[1]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,20,39,143" Grid.Column="1"
+                    IsEnabled="False"/>
+                <TextBox
+                    x:Name="ValueC1"
+                    Text="{Binding ValueCanvasCollection[1]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,143,20,20" Grid.Column="1"
+                    IsEnabled="False"/>
+
+                <Button 
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Grid.Column="1"
+                    Margin="137,20,20,143"
+                    BorderThickness="1"
+                    BorderBrush="#A09D9D"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="1">
+                    <fa5:SvgAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="Black"
+                        Icon="Solid_MinusCircle" 
+                        Height="15" Width="15"/>
+                </Button>
+
+                <Border Grid.Row="0" Grid.Column="2" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                    <ContentControl Content="{Binding Path=CanvasCollection[2]}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="2"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="2"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding MouseLeftButtonUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseRightButtonDown">
+                                <i:InvokeCommandAction Command="{Binding RightMouseButtonDownOnCanvas}" CommandParameter="2"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ContentControl>
+                </Border>
+
+                <TextBox 
+                    x:Name="IDC2"
+                    Text="{Binding IDCanvasCollection[2]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,20,39,143" Grid.Column="2"
+                    IsEnabled="False"/>
+                <TextBox
+                    x:Name="ValueC2"
+                    Text="{Binding ValueCanvasCollection[2]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,143,20,20" Grid.Column="2"
+                    IsEnabled="False"/>
+
+                <Button 
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Grid.Column="2"
+                    Margin="137,20,20,143"
+                    BorderThickness="1"
+                    BorderBrush="#A09D9D"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="2">
+                    <fa5:SvgAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="Black"
+                        Icon="Solid_MinusCircle" 
+                        Height="15" Width="15"/>
+                </Button>
+
+                <Border Grid.Row="1" Grid.Column="0" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                    <ContentControl Content="{Binding Path=CanvasCollection[3]}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="3"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="3"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding MouseLeftButtonUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseRightButtonDown">
+                                <i:InvokeCommandAction Command="{Binding RightMouseButtonDownOnCanvas}" CommandParameter="3"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ContentControl>
+                </Border>
+
+                <TextBox 
+                    x:Name="IDC3"
+                    Text="{Binding IDCanvasCollection[3]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,20,38,144" Grid.Row="1"
+                    IsEnabled="False"/>
+                <TextBox
+                    x:Name="ValueC3"
+                    Text="{Binding ValueCanvasCollection[3]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,143,20,20" Grid.Row="1"
+                    IsEnabled="False"/>
+
+                <Button 
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Grid.Row="1"
+                    Margin="138,20,20,144"
+                    BorderThickness="1"
+                    BorderBrush="#A09D9D"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="3">
+                    <fa5:SvgAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="Black"
+                        Icon="Solid_MinusCircle" 
+                        Height="15" Width="15"/>
+                </Button>
+
+                <Border Grid.Row="1" Grid.Column="1" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                    <ContentControl Content="{Binding Path=CanvasCollection[4]}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="4"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="4"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding MouseLeftButtonUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseRightButtonDown">
+                                <i:InvokeCommandAction Command="{Binding RightMouseButtonDownOnCanvas}" CommandParameter="4"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ContentControl>
+                </Border>
+
+                <TextBox 
+                    x:Name="IDC4"
+                    Text="{Binding IDCanvasCollection[4]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,20,38,144" 
+                    Grid.Row="1" 
+                    Grid.Column="1"
+                    IsEnabled="False"/>
+                <TextBox
+                    x:Name="ValueC4"
+                    Text="{Binding ValueCanvasCollection[4]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,143,20,20" 
+                    Grid.Row="1" 
+                    Grid.Column="1"
+                    IsEnabled="False"/>
+
+                <Button 
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    Margin="137,20,20,144"
+                    BorderThickness="1"
+                    BorderBrush="#A09D9D"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="4">
+                    <fa5:SvgAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="Black"
+                        Icon="Solid_MinusCircle" 
+                        Height="15" Width="15"/>
+                </Button>
+
+                <Border Grid.Row="1" Grid.Column="2" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                    <ContentControl Content="{Binding Path=CanvasCollection[5]}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="5"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="5"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding MouseLeftButtonUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseRightButtonDown">
+                                <i:InvokeCommandAction Command="{Binding RightMouseButtonDownOnCanvas}" CommandParameter="5"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ContentControl>
+                </Border>
+
+                <TextBox 
+                    x:Name="IDC5"
+                    Text="{Binding IDCanvasCollection[5]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,20,38,144" 
+                    Grid.Row="1" 
+                    Grid.Column="2"
+                    IsEnabled="False"/>
+                <TextBox
+                    x:Name="ValueC5"
+                    Text="{Binding ValueCanvasCollection[5]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,143,20,20" 
+                    Grid.Row="1" 
+                    Grid.Column="2"
+                    IsEnabled="False"/>
+
+                <Button 
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Grid.Column="2"
+                    Grid.Row="1"
+                    Margin="137,20,20,144"
+                    BorderThickness="1"
+                    BorderBrush="#A09D9D"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="5">
+                    <fa5:SvgAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="Black"
+                        Icon="Solid_MinusCircle" 
+                        Height="15" Width="15"/>
+                </Button>
+
+                <Border Grid.Row="2" Grid.Column="0" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                    <ContentControl Content="{Binding Path=CanvasCollection[6]}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="6"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="6"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding MouseLeftButtonUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseRightButtonDown">
+                                <i:InvokeCommandAction Command="{Binding RightMouseButtonDownOnCanvas}" CommandParameter="6"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ContentControl>
+                </Border>
+
+                <TextBox 
+                    x:Name="IDC6"
+                    Text="{Binding IDCanvasCollection[6]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,21,38,143" 
+                    Grid.Row="2"
+                    IsEnabled="False"/>
+                <TextBox
+                    x:Name="ValueC6"
+                    Text="{Binding ValueCanvasCollection[6]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,142,20,20" 
+                    Grid.Row="2"
+                    IsEnabled="False"/>
+
+                <Button 
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Grid.Column="0"
+                    Grid.Row="2"
+                    Margin="137,20,20,143"
+                    BorderThickness="1"
+                    BorderBrush="#A09D9D"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="6">
+                    <fa5:SvgAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="Black"
+                        Icon="Solid_MinusCircle" 
+                        Height="15" Width="15"/>
+                </Button>
+
+                <Border Grid.Row="2" Grid.Column="1" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                    <ContentControl Content="{Binding Path=CanvasCollection[7]}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="7"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="7"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding MouseLeftButtonUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseRightButtonDown">
+                                <i:InvokeCommandAction Command="{Binding RightMouseButtonDownOnCanvas}" CommandParameter="7"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ContentControl>
+                </Border>
+
+                <TextBox 
+                    x:Name="IDC7"
+                    Text="{Binding IDCanvasCollection[7]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,21,38,143" 
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    IsEnabled="False"/>
+                <TextBox
+                    x:Name="ValueC7"
+                    Text="{Binding ValueCanvasCollection[7]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,142,20,20" 
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    IsEnabled="False"/>
+
+                <Button 
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Grid.Column="1"
+                    Grid.Row="2"
+                    Margin="137,20,20,143"
+                    BorderThickness="1"
+                    BorderBrush="#A09D9D"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="7">
+                    <fa5:SvgAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="Black"
+                        Icon="Solid_MinusCircle" 
+                        Height="15" Width="15"/>
+                </Button>
+
+                <Border Grid.Row="2" Grid.Column="2" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                    <ContentControl Content="{Binding Path=CanvasCollection[8]}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="8"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="8"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding MouseLeftButtonUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseRightButtonDown">
+                                <i:InvokeCommandAction Command="{Binding RightMouseButtonDownOnCanvas}" CommandParameter="8"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ContentControl>
+                </Border>
+
+                <TextBox 
+                    x:Name="IDC8"
+                    Text="{Binding IDCanvasCollection[8]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,21,38,143" 
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    IsEnabled="False"/>
+                <TextBox
+                    x:Name="ValueC8"
+                    Text="{Binding ValueCanvasCollection[8]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,142,20,20" 
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    IsEnabled="False"/>
+
+                <Button 
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Grid.Column="2"
+                    Grid.Row="2"
+                    Margin="137,20,20,143"
+                    BorderThickness="1"
+                    BorderBrush="#A09D9D"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="8">
+                    <fa5:SvgAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="Black"
+                        Icon="Solid_MinusCircle" 
+                        Height="15" Width="15"/>
+                </Button>
+
+                <Border Grid.Row="3" Grid.Column="0" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                    <ContentControl Content="{Binding Path=CanvasCollection[9]}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="9"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="9"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding MouseLeftButtonUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseRightButtonDown">
+                                <i:InvokeCommandAction Command="{Binding RightMouseButtonDownOnCanvas}" CommandParameter="9"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ContentControl>
+                </Border>
+
+                <TextBox 
+                    x:Name="IDC9"
+                    Text="{Binding IDCanvasCollection[9]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,21,38,143" 
+                    Grid.Row="3"
+                    IsEnabled="False"/>
+                <TextBox
+                    x:Name="ValueC9"
+                    Text="{Binding ValueCanvasCollection[9]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,142,20,20" 
+                    Grid.Row="3"
+                    IsEnabled="False"/>
+
+                <Button 
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Grid.Column="0"
+                    Grid.Row="3"
+                    Margin="137,20,20,143"
+                    BorderThickness="1"
+                    BorderBrush="#A09D9D"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="9">
+                    <fa5:SvgAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="Black"
+                        Icon="Solid_MinusCircle" 
+                        Height="15" Width="15"/>
+                </Button>
+
+                <Border Grid.Row="3" Grid.Column="1" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                    <ContentControl Content="{Binding Path=CanvasCollection[10]}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="10"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="10"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding MouseLeftButtonUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseRightButtonDown">
+                                <i:InvokeCommandAction Command="{Binding RightMouseButtonDownOnCanvas}" CommandParameter="10"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ContentControl>
+                </Border>
+
+                <TextBox 
+                    x:Name="IDC10"
+                    Text="{Binding IDCanvasCollection[10]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,21,38,143" 
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    IsEnabled="False"/>
+                <TextBox
+                    x:Name="ValueC10"
+                    Text="{Binding ValueCanvasCollection[10]}"
+                    FontSize="15"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent" 
+                    Margin="20,142,20,20" 
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    IsEnabled="False"/>
+
+                <Button 
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Grid.Column="1"
+                    Grid.Row="3"
+                    Margin="137,20,20,143"
+                    BorderThickness="1"
+                    BorderBrush="#A09D9D"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="10">
+                    <fa5:SvgAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="Black"
+                        Icon="Solid_MinusCircle" 
+                        Height="15" Width="15"/>
+                </Button>
+
+                <Border Grid.Row="3" Grid.Column="2" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                    <ContentControl Content="{Binding Path=CanvasCollection[11]}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="11"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="11"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding MouseLeftButtonUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseRightButtonDown">
+                                <i:InvokeCommandAction Command="{Binding RightMouseButtonDownOnCanvas}" CommandParameter="11"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ContentControl>
+                </Border>
+
+                <TextBox 
+                     x:Name="IDC11"
+                     Text="{Binding IDCanvasCollection[11]}"
+                     FontSize="15"
+                     HorizontalContentAlignment="Center"
+                     VerticalContentAlignment="Center"
+                     Background="Transparent" 
+                     Margin="20,21,38,143" 
+                     Grid.Row="3"
+                     Grid.Column="2"
+                     IsEnabled="False"/>
+                <TextBox
+                     x:Name="ValueC11"
+                     Text="{Binding ValueCanvasCollection[11]}"
+                     FontSize="15"
+                     HorizontalContentAlignment="Center"
+                     VerticalContentAlignment="Center"
+                     Background="Transparent" 
+                     Margin="20,142,20,20" 
+                     Grid.Row="3"
+                     Grid.Column="2"
+                     IsEnabled="False"/>
+
+                <Button 
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Grid.Column="2"
+                    Grid.Row="3"
+                    Margin="137,20,20,143"
+                    BorderThickness="1"
+                    BorderBrush="#A09D9D"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="11">
+                    <fa5:SvgAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="Black"
+                        Icon="Solid_MinusCircle" 
+                        Height="15" Width="15"/>
+                </Button>
+
             </Grid>
         </Canvas>
 
