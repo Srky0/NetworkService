@@ -23,11 +23,11 @@ namespace NetworkService.Views
     /// </summary>
     public partial class NetworkEntity : UserControl
     {
-        private NetworkEntityViewModel _networkEntityViewModel;
-        public NetworkEntity()
+        public NetworkEntityViewModel _networkEntityViewModel;
+        public NetworkEntity(NetworkDisplay networkDisplay)
         {
             InitializeComponent();
-            _networkEntityViewModel = new NetworkEntityViewModel();
+            _networkEntityViewModel = new NetworkEntityViewModel(networkDisplay);
             DataContext = _networkEntityViewModel;
         }
 

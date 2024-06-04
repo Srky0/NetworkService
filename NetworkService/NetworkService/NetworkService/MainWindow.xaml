@@ -14,21 +14,6 @@
         Height="846" Width="1760"
         Background="#3E3E3E"
         Name="MainWindowRef">
-    
-    <Window.Resources>
-        <DataTemplate DataType="{x:Type viewModels:MainWindowViewModel}">
-            <views:NetworkEntity />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type viewModels:NetworkDisplayViewModel}">
-            <views:NetworkDisplay />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type viewModels:NetworkEntityViewModel}">
-            <views:NetworkEntity />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type viewModels:MeasurementGraphViewModel}">
-            <views:MeasurementGraph />
-        </DataTemplate>
-    </Window.Resources>
 
 
     <Grid>
@@ -120,11 +105,14 @@
 
         </Grid>
 
-        <views:NetworkDisplay Grid.Column="1"/>
 
         <ContentControl
+            Grid.Column="1"
+            Content="{Binding Display}" />
+        
+        <ContentControl
             Grid.Column="2"
-            Content="{Binding CurrentViewModel}" />
+            Content="{Binding CurrentView}" />
 
         
     </Grid>

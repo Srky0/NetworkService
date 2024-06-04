@@ -24,37 +24,42 @@
             </Grid.RowDefinitions>
 
 
-            <TreeView x:Name="TreeView" 
-                      Background="#A09D9D" 
-                      FontWeight="Bold" 
-                      FontSize="24"
-                      AllowDrop="True">
+            <TreeView ItemsSource="{Binding DisplayNodes}"
+                      Background="#A09D9D"
+                      Name="TreeView">
 
-                <TreeViewItem Header="Interval Meter"  ItemsSource="{Binding Interval_Meter_entities}">
-                    <TreeViewItem.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" FontSize="18"/>
-                        </DataTemplate>
-                    </TreeViewItem.ItemTemplate>
-                </TreeViewItem>
-
-                <TreeViewItem Header="Smart Meter" ItemsSource="{Binding Smart_Meter_entities}">
-                    <TreeViewItem.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" FontSize="18"/>
-                        </DataTemplate>
-                    </TreeViewItem.ItemTemplate>
-                </TreeViewItem>
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding EntitiesSameType}">
+                        <TextBlock 
+                            Text="{Binding Type}"
+                            FontSize="23"
+                            Foreground="Black"
+                            FontWeight="Bold"/>
+                        <HierarchicalDataTemplate.ItemTemplate>
+                            <DataTemplate >
+                                <Grid Margin="0 5 0 5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="20" Margin="0 0 0 5" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </HierarchicalDataTemplate.ItemTemplate>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
 
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectedItemChanged">
                         <i:InvokeCommandAction 
-                                Command="{Binding SelectionChanged_TreeView}"
-                                CommandParameter="{Binding SelectedItem, ElementName=TreeView}" />
+                            Command="{Binding SelectionChanged_TreeView}"
+                            CommandParameter="{Binding SelectedItem, ElementName=TreeView}" />
                     </i:EventTrigger>
                     <i:EventTrigger EventName="MouseLeftButtonUp">
                         <i:InvokeCommandAction 
-                                Command="{Binding MouseLeftButtonUp_TreeView}" />
+                            Command="{Binding MouseLeftButtonUp_TreeView}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
 
@@ -63,11 +68,13 @@
 
 
 
+
             <Button 
                 Grid.Row="2"
                 Height="50px"
                 FontSize="24"
-                Background="#A09D9D">
+                Background="#A09D9D"
+                Command="{Binding OrganizeAllCommand}">
                 <StackPanel Orientation="Horizontal">
                     <fa5:SvgAwesome
                         Height="40"
@@ -78,7 +85,7 @@
                         Icon="Solid_LayerGroup" 
                         Grid.Row="3"/>
                     <Label 
-                        Content="Set All"
+                        Content="Organise All"
                         FontSize="24"/>
                 </StackPanel>
             </Button>
@@ -103,8 +110,32 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
+                <ItemsControl
+                    x:Name="LinesItemsControl"
+                    Grid.Row="0" Grid.Column="0"
+                    Grid.RowSpan="4" Grid.ColumnSpan="3" 
+                    Panel.ZIndex="-1"
+                    ItemsSource="{Binding LineCollection}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Line
+                                X1="{Binding X1}"
+                                Y1="{Binding Y1}"
+                                X2="{Binding X2}"
+                                Y2="{Binding Y2}"
+                                Stroke="Red"
+                                StrokeThickness="2"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
-                <Border Grid.Row="0" Grid.Column="0" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+
+                <Border Grid.Row="0" Grid.Column="0" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20" x:Name="B00">
                     <ContentControl Content="{Binding Path=CanvasCollection[0]}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Drop">

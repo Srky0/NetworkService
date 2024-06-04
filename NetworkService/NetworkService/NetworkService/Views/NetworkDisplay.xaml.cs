@@ -22,11 +22,11 @@ namespace NetworkService.Views
     /// </summary>
     public partial class NetworkDisplay : UserControl
     {
-        private NetworkDisplayViewModel _networkDisplayViewModel;
-        public NetworkDisplay()
+        public NetworkDisplayViewModel _networkDisplayViewModel;
+        public NetworkDisplay(MainWindowViewModel mainWindow)
         {
             InitializeComponent();
-            _networkDisplayViewModel = new NetworkDisplayViewModel();
+            _networkDisplayViewModel = new NetworkDisplayViewModel(mainWindow);
             DataContext = _networkDisplayViewModel;
         }
 

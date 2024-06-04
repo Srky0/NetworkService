@@ -1,5 +1,6 @@
 ﻿using Game_Client.Helpers;
 using NetworkService.Model;
+using NetworkService.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,6 +11,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 using System.Xml.Linq;
 using Type = NetworkService.Model.Type;
 
@@ -55,10 +58,12 @@ namespace NetworkService.ViewModel
         public MyICommand ResetCommand { get; private set; }
 
 
-        
+        private NetworkDisplay _networkDisplay;
 
-        public NetworkEntityViewModel()
+        public NetworkEntityViewModel(NetworkDisplay networkDisplay)
         {
+            _networkDisplay = networkDisplay;
+
             FilterOptions = new List<string> { "All", "Interval_Meter", "Smart_Meter" };
 
             AddCommand = new MyICommand(AddEntity);
@@ -79,6 +84,7 @@ namespace NetworkService.ViewModel
 
         private void DeleteEntity()
         {
+            List<Line> line = new List<Line>();
             if (SelectedItems != null && SelectedItems.Any())
             {
                 foreach (var item in SelectedItems.ToList())
@@ -86,29 +92,61 @@ namespace NetworkService.ViewModel
                     if (MainWindowViewModel.entities.Any(entity => entity.Id == item.Id))
                     {
                         MainWindowViewModel.entities.Remove(item);
-                    }
-                }
+                        _networkDisplay._networkDisplayViewModel.RemoveEntityNode(item);
 
-                NetowrkEntities = MainWindowViewModel.entities;
-                MainWindowViewModel.Interval_Meter_entities.Clear();
-                MainWindowViewModel.Smart_Meter_entities.Clear();
-                foreach (var i in NetowrkEntities)
-                {
-                    if (i.Type.Equals(Type.Interval_Meter))
-                    {
-                        MainWindowViewModel.Interval_Meter_entities.Add(i);
-                    }
-                    else
-                    {
-                        MainWindowViewModel.Smart_Meter_entities.Add(i);
+
+                        foreach(var linija in _networkDisplay._networkDisplayViewModel.LineCollection)
+                        {
+                            if(linija.Destination == GetCanvasIndexForEntityId(item.Id) || linija.Source == GetCanvasIndexForEntityId(item.Id))
+                            {
+                                if(!line.Contains(linija))
+                                    line.Add(linija);
+                            }
+                        }
+
+                        foreach(var lineDelete in line)
+                        {
+                            _networkDisplay._networkDisplayViewModel.LineCollection.Remove(lineDelete);
+                        }
+
+
+                        DeleteEntityFromCanvas(item);
                     }
                 }
+                
                 ResetEntity();
                 SelectedItems.Clear();
             }
             else
             {
                 //Gresaka: Izaberite sta se brise
+            }
+        }
+
+        public int GetCanvasIndexForEntityId(int entityId)
+        {
+            for (int i = 0; i < _networkDisplay._networkDisplayViewModel.CanvasCollection.Count; i++)
+            {
+                Entity entity = (_networkDisplay._networkDisplayViewModel.CanvasCollection[i].Resources["data"]) as Entity;
+
+                if ((entity != null) && (entity.Id == entityId))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        public void DeleteEntityFromCanvas(Entity entity)
+        {
+            int canvasIndex = GetCanvasIndexForEntityId(entity.Id);
+
+            if (canvasIndex != -1)
+            {
+                _networkDisplay._networkDisplayViewModel.CanvasCollection[canvasIndex].Resources.Remove("taken");
+                _networkDisplay._networkDisplayViewModel.CanvasCollection[canvasIndex].Resources.Remove("data");
+                _networkDisplay._networkDisplayViewModel.CanvasCollection[canvasIndex].Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3E3E3E"));
+                _networkDisplay._networkDisplayViewModel.OnFiledsFreeCanvas(canvasIndex);
             }
         }
 
@@ -129,10 +167,10 @@ namespace NetworkService.ViewModel
             {
                 string name = $"Interval_Meter {_idI}";
                 List<double> values = new List<double> { 0, 0, 0, 0, 0 };
-                MainWindowViewModel.entities.Add(new Entity(_id, name, Type.Interval_Meter, values));
-                Count = NetowrkEntities.Count;
-                MainWindowViewModel.Interval_Meter_entities.Add(new Entity(_id, name, Type.Interval_Meter, values));
-                //MessageBox.Show(name);
+                Entity newEntity = new Entity(_id, name, Type.Interval_Meter, values);
+                MainWindowViewModel.entities.Add(newEntity);
+                _networkDisplay._networkDisplayViewModel.AddEntityNode(newEntity);
+                Count = MainWindowViewModel.entities.Count;
                 _idI++;
                 _id++;
             }
@@ -140,10 +178,10 @@ namespace NetworkService.ViewModel
             {
                 string name = $"Smart_Meter {_idS}";
                 List<double> values = new List<double> { 0, 0, 0, 0, 0 };
-                MainWindowViewModel.entities.Add(new Entity(_id, name, Type.Smart_Meter, values));
-                Count = NetowrkEntities.Count;
-                MainWindowViewModel.Smart_Meter_entities.Add(new Entity(_id, name, Type.Smart_Meter, values));
-                //MessageBox.Show(name);
+                Entity newEntity = new Entity(_id, name, Type.Smart_Meter, values);
+                MainWindowViewModel.entities.Add(newEntity);
+                _networkDisplay._networkDisplayViewModel.AddEntityNode(newEntity);
+                Count = MainWindowViewModel.entities.Count;
                 _idS++;
                 _id++;
             }

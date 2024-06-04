@@ -74,7 +74,9 @@
     <Compile Include="Helpers\MyICommand.cs" />
     <Compile Include="Helpers\BindableBase.cs" />
     <Compile Include="Model\Entity.cs" />
+    <Compile Include="Model\EntityNode.cs" />
     <Compile Include="Model\Filter.cs" />
+    <Compile Include="Model\Line.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\MeasurementGraphViewModel.cs" />
     <Compile Include="ViewModel\NetworkDisplayViewModel.cs" />

@@ -1,8 +1,11 @@
 ﻿using NetworkService.Model;
+using NetworkService.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Line = NetworkService.Model.Line;
 using Type = NetworkService.Model.Type;
 
 namespace NetworkService.ViewModel
@@ -21,9 +25,6 @@ namespace NetworkService.ViewModel
         private static ObservableCollection<string> _iDCanvasCollection = new ObservableCollection<string> { "", "", "", "", "", "", "", "", "", "", "", ""};
         private static ObservableCollection<string> _valueCanvasCollection = new ObservableCollection<string> { "", "", "", "", "", "", "", "", "", "", "", ""};
 
-        public static ObservableCollection<Entity> Interval_Meter_entities { get; set; } = MainWindowViewModel.Interval_Meter_entities;
-        public static ObservableCollection<Entity> Smart_Meter_entities { get; set; } = MainWindowViewModel.Smart_Meter_entities;
-        public static ObservableCollection<Entity> entities { get; set; } = MainWindowViewModel.entities;
         public ObservableCollection<Canvas> CanvasCollection { get; set; }
         public static ObservableCollection<string> IDCanvasCollection { get { return _iDCanvasCollection; } set { _iDCanvasCollection = value; } }
         public static ObservableCollection<string> ValueCanvasCollection { get { return _valueCanvasCollection; } set { _valueCanvasCollection = value; } }
@@ -35,8 +36,11 @@ namespace NetworkService.ViewModel
         public MyICommand MouseLeftButtonUpCanvas { get; set; }
         public MyICommand<object> RightMouseButtonDownOnCanvas { get; set; }
         public MyICommand<object> FreeCanvas { get; set; }
+        public MyICommand OrganizeAllCommand { get; set; }
 
-        private Entity selectedEntity;
+        public ObservableCollection<Line> LineCollection { get; set; }
+
+        private Entity _selectedEntity;
 
         private Entity draggedItem = null;
         private bool dragging = false;
@@ -45,11 +49,24 @@ namespace NetworkService.ViewModel
         private bool isLineSourceSelected = false;
         private int sourceCanvasIndex = -1;
         private int destinationCanvasIndex = -1;
+        private Line currentLine = new Line();
+        private Point linePoint1 = new Point();
+        private Point linePoint2 = new Point();
 
-       
-        public Entity SelectedEntity { get { return selectedEntity; } set { selectedEntity = value; OnPropertyChanged("SelectedEntity"); } }
 
-        public NetworkDisplayViewModel()
+        public Entity SelectedEntity { get { return _selectedEntity; } set { SetProperty(ref _selectedEntity, value); } }
+
+
+        private ObservableCollection<EntityNode> _displayNodes;
+        public ObservableCollection<EntityNode> DisplayNodes
+        {
+            get { return _displayNodes; }
+            set { _displayNodes = value; OnPropertyChanged(nameof(DisplayNodes)); }
+        }
+
+        public MainWindowViewModel window;
+
+        public NetworkDisplayViewModel(MainWindowViewModel mainWindow)
         {
             InitializeCanvases();
             MouseLeftButtonUp_TreeView = new MyICommand(OnMouseLeftButtonUp);
@@ -59,6 +76,22 @@ namespace NetworkService.ViewModel
             LeftMouseButtonDownOnCanvas = new MyICommand<object>(OnLeftMouseButtonDown);
             RightMouseButtonDownOnCanvas = new MyICommand<object>(OnRightMouseButtonDown);
             FreeCanvas = new MyICommand<object>(OnFreeCanvas);
+            LineCollection = new ObservableCollection<Line>();
+            OrganizeAllCommand = new MyICommand(onOrganize);
+
+            window = mainWindow;
+
+
+            GenerateDisplayNodes();
+        }
+
+        public void OnFiledsFreeCanvas(int index)
+        {
+            CanvasCollection[index].Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3E3E3E"));
+            CanvasCollection[index].Resources.Remove("taken");
+            CanvasCollection[index].Resources.Remove("data");
+            IDCanvasCollection[index] = "";
+            ValueCanvasCollection[index] = "";
         }
 
         private void InitializeCanvases()
@@ -74,6 +107,48 @@ namespace NetworkService.ViewModel
             }
         }
 
+        private void GenerateDisplayNodes()
+        {
+            DisplayNodes = new ObservableCollection<EntityNode>();
+            foreach (Type type in Enum.GetValues(typeof(Type)))
+            {
+                if(type != Type.All)
+                {
+                    EntityNode en = new EntityNode(type);
+                    foreach (Entity entity in MainWindowViewModel.entities)
+                    {
+                        if (entity.Type == type)
+                        {
+                            en.EntitiesSameType.Add(entity);
+                        }
+                    }
+                    DisplayNodes.Add(en);
+                }
+            }
+        }
+
+        public void AddEntityNode(Entity entity)
+        {
+            foreach (var node in DisplayNodes)
+            {
+                if (entity.Type.ToString() == node.Type)
+                {
+                    node.EntitiesSameType.Add(entity);
+                }
+            }
+        }
+        public void RemoveEntityNode(Entity entity)
+        {
+            foreach (var node in DisplayNodes)
+            {
+                if (entity.Type.ToString() == node.Type)
+                {
+                    node.EntitiesSameType.Remove(entity);
+                }
+            }
+        }
+
+
         private void OnMouseLeftButtonUp()
         {
             draggedItem = null;
@@ -83,17 +158,18 @@ namespace NetworkService.ViewModel
         }
         private void OnSelectionChanged(object selectedItem)
         {
-            if (!dragging && selectedItem is Entity selectedEntity)
+            if (!dragging && selectedItem is Entity SelectedEntity)
             {
                 dragging = true;
-                draggedItem = selectedEntity;
-                DragDrop.DoDragDrop(Application.Current.MainWindow, draggedItem, DragDropEffects.Move | DragDropEffects.Copy);
+                draggedItem = SelectedEntity;
+                if (draggedItem != null)
+                    DragDrop.DoDragDrop(Application.Current.MainWindow, draggedItem, DragDropEffects.Move);
             }
         }
 
         private void OnRightMouseButtonDown(object entity)
         {
-            /*int index = Convert.ToInt32(entity);
+            int index = Convert.ToInt32(entity);
 
             if (CanvasCollection[index].Resources["taken"] != null)
             {
@@ -101,11 +177,11 @@ namespace NetworkService.ViewModel
                 {
                     sourceCanvasIndex = index;
 
-                    //linePoint1 = GetPointForCanvasIndex(sourceCanvasIndex);
+                    linePoint1 = GetPointForCanvasIndex(sourceCanvasIndex);
 
-                    *//*currentLine.X1 = linePoint1.X;
+                    currentLine.X1 = linePoint1.X;
                     currentLine.Y1 = linePoint1.Y;
-                    currentLine.Source = sourceCanvasIndex;*//*
+                    currentLine.Source = sourceCanvasIndex;
 
                     isLineSourceSelected = true;
                 }
@@ -114,14 +190,14 @@ namespace NetworkService.ViewModel
                     destinationCanvasIndex = index;
 
                     if ((sourceCanvasIndex != destinationCanvasIndex) && !DoesLineAlreadyExist(sourceCanvasIndex, destinationCanvasIndex))
-                    {*//*
+                    {
                         linePoint2 = GetPointForCanvasIndex(destinationCanvasIndex);
 
                         currentLine.X2 = linePoint2.X;
                         currentLine.Y2 = linePoint2.Y;
-                        currentLine.Destination = destinationCanvasIndex;*/
+                        currentLine.Destination = destinationCanvasIndex;
 
-                        /*LineCollection.Add(new MyLine
+                        LineCollection.Add(new Line
                         {
                             X1 = currentLine.X1,
                             Y1 = currentLine.Y1,
@@ -135,7 +211,7 @@ namespace NetworkService.ViewModel
 
                         linePoint1 = new Point();
                         linePoint2 = new Point();
-                        currentLine = new MyLine();*//*
+                        currentLine = new Line();
                     }
                     else
                     {
@@ -145,7 +221,7 @@ namespace NetworkService.ViewModel
 
                         linePoint1 = new Point();
                         linePoint2 = new Point();
-                        currentLine = new MyLine();
+                        currentLine = new Line();
                     }
                 }
             }
@@ -157,8 +233,46 @@ namespace NetworkService.ViewModel
 
                 linePoint1 = new Point();
                 linePoint2 = new Point();
-                currentLine = new MyLine();
-            }*/
+                currentLine = new Line();
+            }
+        }
+
+        private bool DoesLineAlreadyExist(int source, int destination)
+        {
+            foreach (Line line in LineCollection)
+            {
+                if ((line.Source == source) && (line.Destination == destination))
+                {
+                    return true;
+                }
+                if ((line.Source == destination) && (line.Destination == source))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private Point GetPointForCanvasIndex(int canvasIndex)
+        {
+            double x = 0, y = 0;
+
+            for (int row = 0; row <= 3; row++)
+            {
+                for (int col = 0; col <= 2; col++)
+                {
+                    int currentIndex = row * 3 + col;
+
+                    if (canvasIndex == currentIndex)
+                    {
+                        x = 85 + (col * 180);
+                        y = 95 + (row * 180);
+
+                        break;
+                    }
+                }
+            }
+            return new Point(x, y);
         }
 
         private void OnLeftMouseButtonDown(object entity)
@@ -189,7 +303,7 @@ namespace NetworkService.ViewModel
                     IDCanvasCollection[index] = draggedItem.Id.ToString();
                     ValueCanvasCollection[index] = draggedItem.LastValue.ToString();
 
-                    MainWindowViewModel.UpdateCanvasValue(draggedItem.Id);
+                    window.UpdateCanvasValue(index);
 
                     BitmapImage logo = new BitmapImage();
                     logo.BeginInit();
@@ -204,6 +318,7 @@ namespace NetworkService.ViewModel
                     }
                     logo.EndInit();
 
+                    
                     CanvasCollection[index].Background = new ImageBrush(logo);
                     CanvasCollection[index].Resources.Add("taken", true);
                     CanvasCollection[index].Resources.Add("data", draggedItem);
@@ -219,28 +334,43 @@ namespace NetworkService.ViewModel
                         ValueCanvasCollection[draggingSourceIndex] = "";
                         //BorderBrushCollection[draggingSourceIndex] = Brushes.DarkGray;
 
-                        //UpdateLinesForCanvas(draggingSourceIndex, index);
+                        UpdateLinesForCanvas(draggingSourceIndex, index);
 
                         // Crtanje linije se prekida ako je, izmedju postavljanja tacaka, entitet pomeren na drugo polje
-                        /*if (sourceCanvasIndex != -1)
+                        if (sourceCanvasIndex != -1)
                         {
                             isLineSourceSelected = false;
                             sourceCanvasIndex = -1;
                             linePoint1 = new Point();
                             linePoint2 = new Point();
-                            currentLine = new MyLine();
-                        }*/
+                            currentLine = new Line();
+                        }
 
                         draggingSourceIndex = -1;
                     }
-                    if (intervalMeter)
-                    {
-                        Interval_Meter_entities.Remove(draggedItem);
-                    }
-                    else
-                    {
-                        Smart_Meter_entities.Remove(draggedItem);
-                    }
+                    RemoveEntityNode(draggedItem);
+                    dragging = false;
+                }
+            }
+        }
+
+        private void UpdateLinesForCanvas(int sourceCanvas, int destinationCanvas)
+        {
+            for (int i = 0; i < LineCollection.Count; i++)
+            {
+                if (LineCollection[i].Source == sourceCanvas)
+                {
+                    Point newSourcePoint = GetPointForCanvasIndex(destinationCanvas);
+                    LineCollection[i].X1 = newSourcePoint.X;
+                    LineCollection[i].Y1 = newSourcePoint.Y;
+                    LineCollection[i].Source = destinationCanvas;
+                }
+                else if (LineCollection[i].Destination == sourceCanvas)
+                {
+                    Point newDestinationPoint = GetPointForCanvasIndex(destinationCanvas);
+                    LineCollection[i].X2 = newDestinationPoint.X;
+                    LineCollection[i].Y2 = newDestinationPoint.Y;
+                    LineCollection[i].Destination = destinationCanvas;
                 }
             }
         }
@@ -248,31 +378,125 @@ namespace NetworkService.ViewModel
         private void OnFreeCanvas(object entity)
         {
             int index = Convert.ToInt32(entity);
+            List<Line> line = new List<Line>();
 
             if (CanvasCollection[index].Resources["taken"] != null)
             {
                 // Crtanje linije se prekida ako je, izmedju postavljanja tacaka, entitet uklonjen sa canvas-a
-                /*if (sourceCanvasIndex != -1)
+                if (sourceCanvasIndex != -1)
                 {
                     isLineSourceSelected = false;
                     sourceCanvasIndex = -1;
                     linePoint1 = new Point();
                     linePoint2 = new Point();
-                    currentLine = new MyLine();
-                }*/
+                    currentLine = new Line();
+                }
 
-                //DeleteLinesForCanvas(index);
+                DeleteLinesForCanvas(index);
                 Entity tmpEntity = (Entity)CanvasCollection[index].Resources["data"];
-                if (tmpEntity.Type.ToString().Equals("Interval_Meter"))
-                    Interval_Meter_entities.Add(tmpEntity);
-                else
-                    Smart_Meter_entities.Add(tmpEntity);
+                AddEntityNode(tmpEntity);
                 CanvasCollection[index].Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3E3E3E"));
                 CanvasCollection[index].Resources.Remove("taken");
                 CanvasCollection[index].Resources.Remove("data");
                 IDCanvasCollection[index] = "";
                 ValueCanvasCollection[index] = "";
+                foreach (var linija in LineCollection)
+                {
+                    if (linija.Destination == GetCanvasIndexForEntityId(tmpEntity.Id) || linija.Source == GetCanvasIndexForEntityId(tmpEntity.Id))
+                    {
+                        if (!line.Contains(linija))
+                            line.Add(linija);
+                    }
+                }
+
+                foreach (var lineDelete in line)
+                {
+                    LineCollection.Remove(lineDelete);
+                }
                 //BorderBrushCollection[index] = Brushes.DarkGray;
+            }
+        }
+        public int GetCanvasIndexForEntityId(int entityId)
+        {
+            for (int i = 0; i < CanvasCollection.Count; i++)
+            {
+                Entity entity = (CanvasCollection[i].Resources["data"]) as Entity;
+
+                if ((entity != null) && (entity.Id == entityId))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private void DeleteLinesForCanvas(int canvasIndex)
+        {
+            List<Line> linesToDelete = new List<Line>();
+
+            for (int i = 0; i < LineCollection.Count; i++)
+            {
+                if ((LineCollection[i].Source == canvasIndex) || (LineCollection[i].Destination == canvasIndex))
+                {
+                    linesToDelete.Add(LineCollection[i]);
+                }
+            }
+
+            foreach (Line line in linesToDelete)
+            {
+                LineCollection.Remove(line);
+            }
+        }
+
+
+        private void onOrganize()
+        {
+            List<Entity> addedEntities = new List<Entity>();
+            try
+            {
+                int index = 0;
+                foreach (var item in MainWindowViewModel.entities)
+                {
+                    while (index < CanvasCollection.Count)
+                    {
+                        if (CanvasCollection[index].Resources != null && CanvasCollection[index].Resources["taken"] == null)
+                        {
+                            BitmapImage logo = new BitmapImage();
+                            logo.BeginInit();
+                            if (item.Type.ToString() == "Interval_Meter")
+                            {
+                                logo.UriSource = new Uri("pack://application:,,,/NetworkService;component/Images/Interval_Meter.jpg");
+                            }
+                            else
+                            {
+                                logo.UriSource = new Uri("pack://application:,,,/NetworkService;component/Images/Smart_Meter.jpg");
+                            }
+                            logo.EndInit();
+
+                            CanvasCollection[index].Background = new ImageBrush(logo);
+                            CanvasCollection[index].Resources.Add("taken", true);
+                            CanvasCollection[index].Resources.Add("data", item);
+                            IDCanvasCollection[index] = item.Id.ToString();
+                            ValueCanvasCollection[index] = item.LastValue.ToString();
+                            //BorderBrushCollection[index] = (item.IsValueValid()) ? Brushes.Green : Brushes.Red;
+                            //DescriptionCollection[index] = ($"ID: {item.Id} Name: {item.Name}");
+
+                            addedEntities.Add(item);
+
+                            break;
+                        }
+                        index++;
+                    }
+                    index = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+            foreach (var entity in addedEntities)
+            {
+                RemoveEntityNode(entity);
             }
         }
 

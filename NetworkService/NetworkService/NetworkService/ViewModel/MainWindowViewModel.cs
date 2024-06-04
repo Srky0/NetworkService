@@ -8,10 +8,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace NetworkService.ViewModel
 {
@@ -23,18 +25,17 @@ namespace NetworkService.ViewModel
 
         public static ObservableCollection<Entity> entities { get; set; } = new ObservableCollection<Entity>();
         public static ObservableCollection<Entity> Filter_entities { get; set; } = new ObservableCollection<Entity>();
-        public static ObservableCollection<Entity> Interval_Meter_entities { get; set; } = new ObservableCollection<Entity>();
-        public static ObservableCollection<Entity> Smart_Meter_entities { get; set; } = new ObservableCollection<Entity>();
 
         public MyICommand<string> NavCommand { get; private set; }
         public MyICommand<Window> ExitWindowCommand { get; private set; }
 
-        public NetworkDisplayViewModel networkDisplay;
-        public NetworkEntityViewModel networkEntity;
-        public MeasurementGraphViewModel measurementGraph;
+        public NetworkDisplay networkDisplay;
+        public NetworkEntity networkEntity;
+        public MeasurementGraph measurementGraph;
         public MainWindow window;
 
-        private BindableBase currentViewModel;
+        private UserControl currentView;
+        private UserControl display;
 
         public MainWindowViewModel(MainWindow mainWindow)
         {
@@ -46,19 +47,29 @@ namespace NetworkService.ViewModel
 
 
             window = mainWindow;
-            networkDisplay = new NetworkDisplayViewModel();
-            networkEntity = new NetworkEntityViewModel();
-            measurementGraph = new MeasurementGraphViewModel();
-            CurrentViewModel = networkEntity;
+            networkDisplay = new NetworkDisplay(this);
+            networkEntity = new NetworkEntity(networkDisplay);
+            measurementGraph = new MeasurementGraph();
+            Display = networkDisplay;
+            CurrentView = networkEntity;
         }
 
 
-        public BindableBase CurrentViewModel
+        public UserControl CurrentView
         {
-            get { return currentViewModel; }
+            get { return currentView; }
             set
             {
-                SetProperty(ref currentViewModel, value);
+                SetProperty(ref currentView, value);
+                OnPropertyChanged(nameof(CurrentView));
+            }
+        }
+        public UserControl Display
+        {
+            get { return display; }
+            set
+            {
+                SetProperty(ref display, value);
             }
         }
 
@@ -67,22 +78,16 @@ namespace NetworkService.ViewModel
             switch (destination)
             {
                 case "networkEntity":
-                    CurrentViewModel = networkEntity;
-                    
-                    //window.MeasurementButton.IsEnabled = true;
-                    //window.EntityButton.IsEnabled = false;
+                    CurrentView = networkEntity;
                     break;
                 case "measurementGraph":
-                    CurrentViewModel = measurementGraph;
-                    //window.EntityButton.IsEnabled = true;
-                    //window.MeasurementButton.IsEnabled = false;
+                    CurrentView = measurementGraph;
                     break;
             }
         }
 
         private void CloseWindow(Window MainWindow)
         {
-            //networkEntityViewModel.SaveDataAsXML();
             MainWindow.Close();
         }
 
@@ -115,7 +120,7 @@ namespace NetworkService.ViewModel
                              * duzinu liste koja sadrzi sve objekte pod monitoringom, odnosno
                              * njihov ukupan broj (NE BROJATI OD NULE, VEC POSLATI UKUPAN BROJ)
                              * */
-                            Byte[] data = System.Text.Encoding.ASCII.GetBytes(NetworkEntityViewModel.Count.ToString());
+                            Byte[] data = System.Text.Encoding.ASCII.GetBytes(NetworkEntityViewModel.NetowrkEntities.Count.ToString());
                             stream.Write(data, 0, data.Length);
                         }
                         else
@@ -128,7 +133,7 @@ namespace NetworkService.ViewModel
                             // Obraditi poruku kako bi se dobile informacije o izmeni
                             // Azuriranje potrebnih stvari u aplikaciji
 
-                            if (NetworkEntityViewModel.NetowrkEntities.Count > 0)
+                            if (entities.Count > 0)
                             {
                                 var splited = incomming.Split(':');
                                 //DateTime dt = DateTime.Now;
@@ -136,11 +141,32 @@ namespace NetworkService.ViewModel
                                     //sw.WriteLine(dt + "; " + splited[0] + ", " + splited[1]);
 
                                 int id = Int32.Parse(splited[0].Split('_')[1]);
-                                NetworkEntityViewModel.NetowrkEntities[id].LastValue = Math.Round(Double.Parse(splited[1]), 2);
-                                NetworkEntityViewModel.NetowrkEntities[id].Value.Add(Math.Round(Double.Parse(splited[1]), 2));
-                                NetworkEntityViewModel.NetowrkEntities[id].TimelineValues.Add(DateTime.Now.ToString());
+                                entities[id].LastValue = Math.Round(Double.Parse(splited[1]), 2);
+                                entities[id].Value.Add(Math.Round(Double.Parse(splited[1]), 2));
+                                entities[id].TimelineValues.Add(DateTime.Now.ToString());
 
-                                UpdateCanvasValue(id);
+                                //prodji kkroz canvas Id
+                                /*foreach (var item in NetworkDisplayViewModel.IDCanvasCollection)
+                                {
+                                    if(item.Equals(id.ToString()))
+                                    {
+                                        NetworkDisplayViewModel.ValueCanvasCollection[Int32.Parse(item)] = entities[id].LastValue.ToString();
+                                    }
+                                }    */
+
+
+                                for(int j = 0; j < NetworkDisplayViewModel.IDCanvasCollection.Count(); j++)
+                                {
+                                    if (NetworkDisplayViewModel.IDCanvasCollection[j].Equals(entities[id].Id.ToString()))
+                                    {
+                                        NetworkDisplayViewModel.ValueCanvasCollection[j] = entities[id].LastValue.ToString();
+                                    }
+                                }
+
+
+                                //UpdateCanvasValue(id);
+                                //int index = networkEntity._networkEntityViewModel.GetCanvasIndexForEntityId(id);
+                                //UpdateCanvasValue(index);
 
                                 //Console.WriteLine(splited);
                                 //OnPropertyChanged(nameof(NetworkEntityViewModel.NetowrkEntities));
@@ -148,8 +174,8 @@ namespace NetworkService.ViewModel
 
                                 //NetworkDisplayViewModel.UpdateEntityOnCanvas(MainWindowViewModel.entities[id]);
                                 //NetworkDisplayViewModel.AutoShow();
-                                measurementGraph.UpdateValues(id);
-                                measurementGraph.ShowEntity();
+                                measurementGraph._measurementGraph.UpdateValues(id);
+                                measurementGraph._measurementGraph.ShowEntity();
                             }
 
                         }
@@ -162,18 +188,27 @@ namespace NetworkService.ViewModel
         }
 
 
-        public static void UpdateCanvasValue(int id)
+        public void UpdateCanvasValue(int id)
         {
-            int tmpIndex = 0;
             foreach (var tmp in NetworkDisplayViewModel.IDCanvasCollection)
             {
-                if (tmp.Equals(id.ToString()))
+                int canvasId = networkEntity._networkEntityViewModel.GetCanvasIndexForEntityId(id);
+                if (tmp.Equals(canvasId.ToString()))
                 {
-                    NetworkDisplayViewModel.ValueCanvasCollection[tmpIndex] = NetworkEntityViewModel.NetowrkEntities[id].LastValue.ToString();
+                    try
+                    {
+                        NetworkDisplayViewModel.ValueCanvasCollection[canvasId] = NetworkEntityViewModel.NetowrkEntities[id].LastValue.ToString();
+                        if(NetworkEntityViewModel.NetowrkEntities[id].LastValue > 0.34 && NetworkEntityViewModel.NetowrkEntities[id].LastValue < 2.73)
+                        {
+
+                        }else
+                        {
+
+                        }
+                    }
+                    catch (Exception ex) { }
                 }
-                tmpIndex++;
             }
         }
-
     }
 }
