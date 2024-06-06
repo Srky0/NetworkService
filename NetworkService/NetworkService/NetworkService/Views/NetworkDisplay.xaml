@@ -135,7 +135,7 @@
                 </ItemsControl>
 
 
-                <Border Grid.Row="0" Grid.Column="0" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20" x:Name="B00">
+                <Border Grid.Row="0" Grid.Column="0" BorderBrush="{Binding Path=BorderBrushValues[0]}" BorderThickness="2" AllowDrop="True" Margin="20" x:Name="B00">
                     <ContentControl Content="{Binding Path=CanvasCollection[0]}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Drop">
@@ -161,12 +161,16 @@
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
+                    BorderBrush="{Binding Path=BorderBrushValues[0]}"
+                    BorderThickness="2"
                     Background="Transparent" 
                     Margin="20,20,39,143"
                     IsEnabled="False"/>
                 <TextBox
                     x:Name="ValueC0"
                     Text="{Binding ValueCanvasCollection[0]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[0]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -179,7 +183,7 @@
                     VerticalContentAlignment="Center"
                     Margin="137,20,20,143"
                     BorderThickness="1"
-                    BorderBrush="#A09D9D"
+                    BorderBrush="{Binding Path=BorderBrushValues[0]}"
                     Command="{Binding FreeCanvas}"
                     CommandParameter="0">
                     <fa5:SvgAwesome
@@ -190,7 +194,7 @@
                         Height="15" Width="15"/>
                 </Button>
 
-                <Border Grid.Row="0" Grid.Column="1" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                <Border Grid.Row="0" Grid.Column="1" BorderBrush="{Binding Path=BorderBrushValues[1]}" BorderThickness="2" AllowDrop="True" Margin="20">
                     <ContentControl Content="{Binding Path=CanvasCollection[1]}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Drop">
@@ -212,6 +216,8 @@
                 <TextBox 
                     x:Name="IDC1"
                     Text="{Binding IDCanvasCollection[1]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[1]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -221,6 +227,8 @@
                 <TextBox
                     x:Name="ValueC1"
                     Text="{Binding ValueCanvasCollection[1]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[1]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -234,7 +242,7 @@
                     Grid.Column="1"
                     Margin="137,20,20,143"
                     BorderThickness="1"
-                    BorderBrush="#A09D9D"
+                    BorderBrush="{Binding Path=BorderBrushValues[1]}"
                     Command="{Binding FreeCanvas}"
                     CommandParameter="1">
                     <fa5:SvgAwesome
@@ -245,7 +253,7 @@
                         Height="15" Width="15"/>
                 </Button>
 
-                <Border Grid.Row="0" Grid.Column="2" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                <Border Grid.Row="0" Grid.Column="2" BorderBrush="{Binding Path=BorderBrushValues[2]}" BorderThickness="2" AllowDrop="True" Margin="20">
                     <ContentControl Content="{Binding Path=CanvasCollection[2]}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Drop">
@@ -267,6 +275,8 @@
                 <TextBox 
                     x:Name="IDC2"
                     Text="{Binding IDCanvasCollection[2]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[2]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -276,6 +286,8 @@
                 <TextBox
                     x:Name="ValueC2"
                     Text="{Binding ValueCanvasCollection[2]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[2]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -289,7 +301,7 @@
                     Grid.Column="2"
                     Margin="137,20,20,143"
                     BorderThickness="1"
-                    BorderBrush="#A09D9D"
+                    BorderBrush="{Binding Path=BorderBrushValues[2]}"
                     Command="{Binding FreeCanvas}"
                     CommandParameter="2">
                     <fa5:SvgAwesome
@@ -300,7 +312,7 @@
                         Height="15" Width="15"/>
                 </Button>
 
-                <Border Grid.Row="1" Grid.Column="0" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                <Border Grid.Row="1" Grid.Column="0" BorderBrush="{Binding Path=BorderBrushValues[3]}" BorderThickness="2" AllowDrop="True" Margin="20">
                     <ContentControl Content="{Binding Path=CanvasCollection[3]}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Drop">
@@ -322,6 +334,8 @@
                 <TextBox 
                     x:Name="IDC3"
                     Text="{Binding IDCanvasCollection[3]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[3]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -331,6 +345,8 @@
                 <TextBox
                     x:Name="ValueC3"
                     Text="{Binding ValueCanvasCollection[3]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[3]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -344,7 +360,7 @@
                     Grid.Row="1"
                     Margin="138,20,20,144"
                     BorderThickness="1"
-                    BorderBrush="#A09D9D"
+                    BorderBrush="{Binding Path=BorderBrushValues[3]}"
                     Command="{Binding FreeCanvas}"
                     CommandParameter="3">
                     <fa5:SvgAwesome
@@ -355,7 +371,7 @@
                         Height="15" Width="15"/>
                 </Button>
 
-                <Border Grid.Row="1" Grid.Column="1" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                <Border Grid.Row="1" Grid.Column="1" BorderBrush="{Binding Path=BorderBrushValues[4]}" BorderThickness="2" AllowDrop="True" Margin="20">
                     <ContentControl Content="{Binding Path=CanvasCollection[4]}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Drop">
@@ -377,6 +393,8 @@
                 <TextBox 
                     x:Name="IDC4"
                     Text="{Binding IDCanvasCollection[4]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[4]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -388,6 +406,8 @@
                 <TextBox
                     x:Name="ValueC4"
                     Text="{Binding ValueCanvasCollection[4]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[4]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -404,7 +424,7 @@
                     Grid.Row="1"
                     Margin="137,20,20,144"
                     BorderThickness="1"
-                    BorderBrush="#A09D9D"
+                    BorderBrush="{Binding Path=BorderBrushValues[4]}"
                     Command="{Binding FreeCanvas}"
                     CommandParameter="4">
                     <fa5:SvgAwesome
@@ -415,7 +435,7 @@
                         Height="15" Width="15"/>
                 </Button>
 
-                <Border Grid.Row="1" Grid.Column="2" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                <Border Grid.Row="1" Grid.Column="2" BorderBrush="{Binding Path=BorderBrushValues[5]}" BorderThickness="2" AllowDrop="True" Margin="20">
                     <ContentControl Content="{Binding Path=CanvasCollection[5]}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Drop">
@@ -437,6 +457,8 @@
                 <TextBox 
                     x:Name="IDC5"
                     Text="{Binding IDCanvasCollection[5]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[5]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -448,6 +470,8 @@
                 <TextBox
                     x:Name="ValueC5"
                     Text="{Binding ValueCanvasCollection[5]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[5]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -464,7 +488,7 @@
                     Grid.Row="1"
                     Margin="137,20,20,144"
                     BorderThickness="1"
-                    BorderBrush="#A09D9D"
+                    BorderBrush="{Binding Path=BorderBrushValues[5]}"
                     Command="{Binding FreeCanvas}"
                     CommandParameter="5">
                     <fa5:SvgAwesome
@@ -475,7 +499,7 @@
                         Height="15" Width="15"/>
                 </Button>
 
-                <Border Grid.Row="2" Grid.Column="0" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                <Border Grid.Row="2" Grid.Column="0" BorderBrush="{Binding Path=BorderBrushValues[6]}" BorderThickness="2" AllowDrop="True" Margin="20">
                     <ContentControl Content="{Binding Path=CanvasCollection[6]}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Drop">
@@ -497,6 +521,8 @@
                 <TextBox 
                     x:Name="IDC6"
                     Text="{Binding IDCanvasCollection[6]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[6]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -507,6 +533,8 @@
                 <TextBox
                     x:Name="ValueC6"
                     Text="{Binding ValueCanvasCollection[6]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[6]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -522,7 +550,7 @@
                     Grid.Row="2"
                     Margin="137,20,20,143"
                     BorderThickness="1"
-                    BorderBrush="#A09D9D"
+                    BorderBrush="{Binding Path=BorderBrushValues[6]}"
                     Command="{Binding FreeCanvas}"
                     CommandParameter="6">
                     <fa5:SvgAwesome
@@ -533,7 +561,7 @@
                         Height="15" Width="15"/>
                 </Button>
 
-                <Border Grid.Row="2" Grid.Column="1" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                <Border Grid.Row="2" Grid.Column="1" BorderBrush="{Binding Path=BorderBrushValues[7]}" BorderThickness="2" AllowDrop="True" Margin="20">
                     <ContentControl Content="{Binding Path=CanvasCollection[7]}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Drop">
@@ -555,6 +583,8 @@
                 <TextBox 
                     x:Name="IDC7"
                     Text="{Binding IDCanvasCollection[7]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[7]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -566,6 +596,8 @@
                 <TextBox
                     x:Name="ValueC7"
                     Text="{Binding ValueCanvasCollection[7]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[7]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -582,7 +614,7 @@
                     Grid.Row="2"
                     Margin="137,20,20,143"
                     BorderThickness="1"
-                    BorderBrush="#A09D9D"
+                    BorderBrush="{Binding Path=BorderBrushValues[7]}"
                     Command="{Binding FreeCanvas}"
                     CommandParameter="7">
                     <fa5:SvgAwesome
@@ -593,7 +625,7 @@
                         Height="15" Width="15"/>
                 </Button>
 
-                <Border Grid.Row="2" Grid.Column="2" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                <Border Grid.Row="2" Grid.Column="2" BorderBrush="{Binding Path=BorderBrushValues[8]}" BorderThickness="2" AllowDrop="True" Margin="20">
                     <ContentControl Content="{Binding Path=CanvasCollection[8]}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Drop">
@@ -615,6 +647,8 @@
                 <TextBox 
                     x:Name="IDC8"
                     Text="{Binding IDCanvasCollection[8]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[8]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -626,6 +660,8 @@
                 <TextBox
                     x:Name="ValueC8"
                     Text="{Binding ValueCanvasCollection[8]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[8]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -642,7 +678,7 @@
                     Grid.Row="2"
                     Margin="137,20,20,143"
                     BorderThickness="1"
-                    BorderBrush="#A09D9D"
+                    BorderBrush="{Binding Path=BorderBrushValues[8]}"
                     Command="{Binding FreeCanvas}"
                     CommandParameter="8">
                     <fa5:SvgAwesome
@@ -653,7 +689,7 @@
                         Height="15" Width="15"/>
                 </Button>
 
-                <Border Grid.Row="3" Grid.Column="0" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                <Border Grid.Row="3" Grid.Column="0" BorderBrush="{Binding Path=BorderBrushValues[9]}" BorderThickness="2" AllowDrop="True" Margin="20">
                     <ContentControl Content="{Binding Path=CanvasCollection[9]}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Drop">
@@ -675,6 +711,8 @@
                 <TextBox 
                     x:Name="IDC9"
                     Text="{Binding IDCanvasCollection[9]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[9]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -685,6 +723,8 @@
                 <TextBox
                     x:Name="ValueC9"
                     Text="{Binding ValueCanvasCollection[9]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[9]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -700,7 +740,7 @@
                     Grid.Row="3"
                     Margin="137,20,20,143"
                     BorderThickness="1"
-                    BorderBrush="#A09D9D"
+                    BorderBrush="{Binding Path=BorderBrushValues[9]}"
                     Command="{Binding FreeCanvas}"
                     CommandParameter="9">
                     <fa5:SvgAwesome
@@ -711,7 +751,7 @@
                         Height="15" Width="15"/>
                 </Button>
 
-                <Border Grid.Row="3" Grid.Column="1" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                <Border Grid.Row="3" Grid.Column="1" BorderBrush="{Binding Path=BorderBrushValues[10]}" BorderThickness="2" AllowDrop="True" Margin="20">
                     <ContentControl Content="{Binding Path=CanvasCollection[10]}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Drop">
@@ -733,6 +773,8 @@
                 <TextBox 
                     x:Name="IDC10"
                     Text="{Binding IDCanvasCollection[10]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[10]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -744,6 +786,8 @@
                 <TextBox
                     x:Name="ValueC10"
                     Text="{Binding ValueCanvasCollection[10]}"
+                    BorderBrush="{Binding Path=BorderBrushValues[10]}"
+                    BorderThickness="2"
                     FontSize="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
@@ -760,7 +804,7 @@
                     Grid.Row="3"
                     Margin="137,20,20,143"
                     BorderThickness="1"
-                    BorderBrush="#A09D9D"
+                    BorderBrush="{Binding Path=BorderBrushValues[10]}"
                     Command="{Binding FreeCanvas}"
                     CommandParameter="10">
                     <fa5:SvgAwesome
@@ -771,7 +815,7 @@
                         Height="15" Width="15"/>
                 </Button>
 
-                <Border Grid.Row="3" Grid.Column="2" BorderBrush="#A09D9D" BorderThickness="1" AllowDrop="True" Margin="20">
+                <Border Grid.Row="3" Grid.Column="2" BorderBrush="{Binding Path=BorderBrushValues[11]}" BorderThickness="2" AllowDrop="True" Margin="20">
                     <ContentControl Content="{Binding Path=CanvasCollection[11]}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Drop">
@@ -793,6 +837,8 @@
                 <TextBox 
                      x:Name="IDC11"
                      Text="{Binding IDCanvasCollection[11]}"
+                     BorderBrush="{Binding Path=BorderBrushValues[11]}"
+                     BorderThickness="2"
                      FontSize="15"
                      HorizontalContentAlignment="Center"
                      VerticalContentAlignment="Center"
@@ -804,6 +850,8 @@
                 <TextBox
                      x:Name="ValueC11"
                      Text="{Binding ValueCanvasCollection[11]}"
+                     BorderBrush="{Binding Path=BorderBrushValues[11]}"
+                     BorderThickness="2"
                      FontSize="15"
                      HorizontalContentAlignment="Center"
                      VerticalContentAlignment="Center"
@@ -820,7 +868,7 @@
                     Grid.Row="3"
                     Margin="137,20,20,143"
                     BorderThickness="1"
-                    BorderBrush="#A09D9D"
+                    BorderBrush="{Binding Path=BorderBrushValues[11]}"
                     Command="{Binding FreeCanvas}"
                     CommandParameter="11">
                     <fa5:SvgAwesome

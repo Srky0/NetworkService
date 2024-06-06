@@ -24,10 +24,12 @@ namespace NetworkService.ViewModel
     {
         private static ObservableCollection<string> _iDCanvasCollection = new ObservableCollection<string> { "", "", "", "", "", "", "", "", "", "", "", ""};
         private static ObservableCollection<string> _valueCanvasCollection = new ObservableCollection<string> { "", "", "", "", "", "", "", "", "", "", "", ""};
+        private static ObservableCollection<string> _borderBrushValues = new ObservableCollection<string> { "#A09D9D", "#A09D9D", "#A09D9D", "#A09D9D", "#A09D9D", "#A09D9D", "#A09D9D", "#A09D9D", "#A09D9D", "#A09D9D", "#A09D9D", "#A09D9D" };
 
         public ObservableCollection<Canvas> CanvasCollection { get; set; }
         public static ObservableCollection<string> IDCanvasCollection { get { return _iDCanvasCollection; } set { _iDCanvasCollection = value; } }
         public static ObservableCollection<string> ValueCanvasCollection { get { return _valueCanvasCollection; } set { _valueCanvasCollection = value; } }
+        public static ObservableCollection<string> BorderBrushValues { get { return _borderBrushValues; } set { _borderBrushValues = value; } }
 
         public MyICommand<object> SelectionChanged_TreeView {  get; set; }
         public MyICommand MouseLeftButtonUp_TreeView { get; set; }
@@ -92,6 +94,7 @@ namespace NetworkService.ViewModel
             CanvasCollection[index].Resources.Remove("data");
             IDCanvasCollection[index] = "";
             ValueCanvasCollection[index] = "";
+            BorderBrushValues[index] = "#A09D9D";
         }
 
         private void InitializeCanvases()
@@ -322,7 +325,10 @@ namespace NetworkService.ViewModel
                     CanvasCollection[index].Background = new ImageBrush(logo);
                     CanvasCollection[index].Resources.Add("taken", true);
                     CanvasCollection[index].Resources.Add("data", draggedItem);
-                    //BorderBrushCollection[index] = (draggedItem.IsValueValidForType()) ? Brushes.Green : Brushes.Red;
+                    if (draggedItem.LastValue > 0.34 && draggedItem.LastValue < 2.7)
+                        BorderBrushValues[index] = "#A09D9D";
+                    else
+                        BorderBrushValues[index] = "Red";
 
                     // PREVLACENJE IZ DRUGOG CANVASA
                     if (draggingSourceIndex != -1)
@@ -332,7 +338,7 @@ namespace NetworkService.ViewModel
                         CanvasCollection[draggingSourceIndex].Resources.Remove("data");
                         IDCanvasCollection[draggingSourceIndex] = "";
                         ValueCanvasCollection[draggingSourceIndex] = "";
-                        //BorderBrushCollection[draggingSourceIndex] = Brushes.DarkGray;
+                        BorderBrushValues[draggingSourceIndex] = "#A09D9D";
 
                         UpdateLinesForCanvas(draggingSourceIndex, index);
 
@@ -400,6 +406,7 @@ namespace NetworkService.ViewModel
                 CanvasCollection[index].Resources.Remove("data");
                 IDCanvasCollection[index] = "";
                 ValueCanvasCollection[index] = "";
+                BorderBrushValues[index] = "#A09D9D";
                 foreach (var linija in LineCollection)
                 {
                     if (linija.Destination == GetCanvasIndexForEntityId(tmpEntity.Id) || linija.Source == GetCanvasIndexForEntityId(tmpEntity.Id))
@@ -413,7 +420,6 @@ namespace NetworkService.ViewModel
                 {
                     LineCollection.Remove(lineDelete);
                 }
-                //BorderBrushCollection[index] = Brushes.DarkGray;
             }
         }
         public int GetCanvasIndexForEntityId(int entityId)
@@ -455,39 +461,42 @@ namespace NetworkService.ViewModel
             try
             {
                 int index = 0;
-                foreach (var item in MainWindowViewModel.entities)
+                foreach(var node in DisplayNodes)
                 {
-                    while (index < CanvasCollection.Count)
+                    foreach (var item in node.EntitiesSameType)
                     {
-                        if (CanvasCollection[index].Resources != null && CanvasCollection[index].Resources["taken"] == null)
+                        while (index < CanvasCollection.Count)
                         {
-                            BitmapImage logo = new BitmapImage();
-                            logo.BeginInit();
-                            if (item.Type.ToString() == "Interval_Meter")
+                            if (CanvasCollection[index].Resources != null && CanvasCollection[index].Resources["taken"] == null)
                             {
-                                logo.UriSource = new Uri("pack://application:,,,/NetworkService;component/Images/Interval_Meter.jpg");
+
+                                BitmapImage logo = new BitmapImage();
+                                logo.BeginInit();
+                                if (item.Type.ToString() == "Interval_Meter")
+                                {
+                                    logo.UriSource = new Uri("pack://application:,,,/NetworkService;component/Images/Interval_Meter.jpg");
+                                }
+                                else
+                                {
+                                    logo.UriSource = new Uri("pack://application:,,,/NetworkService;component/Images/Smart_Meter.jpg");
+                                }
+                                logo.EndInit();
+
+                                CanvasCollection[index].Background = new ImageBrush(logo);
+                                CanvasCollection[index].Resources.Add("taken", true);
+                                CanvasCollection[index].Resources.Add("data", item);
+                                IDCanvasCollection[index] = item.Id.ToString();
+                                ValueCanvasCollection[index] = item.LastValue.ToString();
+                                BorderBrushValues[index] = "#A09D9D";
+
+                                addedEntities.Add(item);
+
+                                break;
                             }
-                            else
-                            {
-                                logo.UriSource = new Uri("pack://application:,,,/NetworkService;component/Images/Smart_Meter.jpg");
-                            }
-                            logo.EndInit();
-
-                            CanvasCollection[index].Background = new ImageBrush(logo);
-                            CanvasCollection[index].Resources.Add("taken", true);
-                            CanvasCollection[index].Resources.Add("data", item);
-                            IDCanvasCollection[index] = item.Id.ToString();
-                            ValueCanvasCollection[index] = item.LastValue.ToString();
-                            //BorderBrushCollection[index] = (item.IsValueValid()) ? Brushes.Green : Brushes.Red;
-                            //DescriptionCollection[index] = ($"ID: {item.Id} Name: {item.Name}");
-
-                            addedEntities.Add(item);
-
-                            break;
+                            index++;
                         }
-                        index++;
+                        index = 0;
                     }
-                    index = 0;
                 }
             }
             catch (Exception ex)

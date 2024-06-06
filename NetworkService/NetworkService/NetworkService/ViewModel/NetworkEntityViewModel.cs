@@ -320,6 +320,7 @@ namespace NetworkService.ViewModel
                     if (SelectedTypeFilter.Equals("All") || SelectedTypeFilter.Equals("System.Windows.Controls.ComboBoxItem: All"))
                     {
                         type = "";
+                        int tmp = Int32.Parse(type);
                     }
 
                     if (Regex.IsMatch(IDText, @"^\d+$"))

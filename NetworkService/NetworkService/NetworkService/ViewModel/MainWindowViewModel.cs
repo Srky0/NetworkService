@@ -160,6 +160,14 @@ namespace NetworkService.ViewModel
                                     if (NetworkDisplayViewModel.IDCanvasCollection[j].Equals(entities[id].Id.ToString()))
                                     {
                                         NetworkDisplayViewModel.ValueCanvasCollection[j] = entities[id].LastValue.ToString();
+                                        if (entities[id].LastValue > 0.34 && entities[id].LastValue < 2.73)
+                                        {
+                                            NetworkDisplayViewModel.BorderBrushValues[j] = "#A09D9D";
+                                        }
+                                        else
+                                        {
+                                            NetworkDisplayViewModel.BorderBrushValues[j] = "Red";
+                                        }
                                     }
                                 }
 
@@ -197,13 +205,14 @@ namespace NetworkService.ViewModel
                 {
                     try
                     {
-                        NetworkDisplayViewModel.ValueCanvasCollection[canvasId] = NetworkEntityViewModel.NetowrkEntities[id].LastValue.ToString();
-                        if(NetworkEntityViewModel.NetowrkEntities[id].LastValue > 0.34 && NetworkEntityViewModel.NetowrkEntities[id].LastValue < 2.73)
+                        NetworkDisplayViewModel.ValueCanvasCollection[canvasId] = entities[id].LastValue.ToString();
+                        if(entities[id].LastValue > 0.34 && entities[id].LastValue < 2.73)
                         {
-
-                        }else
+                            NetworkDisplayViewModel.BorderBrushValues[canvasId] = "#A09D9D";
+                        }
+                        else
                         {
-
+                            NetworkDisplayViewModel.BorderBrushValues[canvasId] = "Red";
                         }
                     }
                     catch (Exception ex) { }
