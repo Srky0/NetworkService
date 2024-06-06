@@ -33,6 +33,8 @@ namespace MeteringSimulator
 
             ProjectTopics.ItemsSource = new List<string>() { "T1", "T2", "T3", "T4", "T5", "T6", "T7" };
 
+            ProjectTopics.SelectedValue = "T2";
+
             RestartButton.IsEnabled = false;
         }
 

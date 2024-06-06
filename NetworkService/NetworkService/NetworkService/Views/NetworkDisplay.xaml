@@ -26,7 +26,8 @@
 
             <TreeView ItemsSource="{Binding DisplayNodes}"
                       Background="#A09D9D"
-                      Name="TreeView">
+                      Name="TreeView"
+                      TabIndex="4">
 
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding EntitiesSameType}">
@@ -74,6 +75,7 @@
                 Height="50px"
                 FontSize="24"
                 Background="#A09D9D"
+                TabIndex="5"
                 Command="{Binding OrganizeAllCommand}">
                 <StackPanel Orientation="Horizontal">
                     <fa5:SvgAwesome
@@ -183,6 +185,7 @@
                     VerticalContentAlignment="Center"
                     Margin="137,20,20,143"
                     BorderThickness="1"
+                    TabIndex="6"
                     BorderBrush="{Binding Path=BorderBrushValues[0]}"
                     Command="{Binding FreeCanvas}"
                     CommandParameter="0">
@@ -237,6 +240,7 @@
                     IsEnabled="False"/>
 
                 <Button 
+                    TabIndex="7"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     Grid.Column="1"
@@ -296,6 +300,7 @@
                     IsEnabled="False"/>
 
                 <Button 
+                    TabIndex="8"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     Grid.Column="2"
@@ -355,6 +360,7 @@
                     IsEnabled="False"/>
 
                 <Button 
+                    TabIndex="9"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     Grid.Row="1"
@@ -418,6 +424,7 @@
                     IsEnabled="False"/>
 
                 <Button 
+                    TabIndex="10"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     Grid.Column="1"
@@ -482,6 +489,7 @@
                     IsEnabled="False"/>
 
                 <Button 
+                    TabIndex="11"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     Grid.Column="2"
@@ -544,6 +552,7 @@
                     IsEnabled="False"/>
 
                 <Button 
+                    TabIndex="12"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     Grid.Column="0"
@@ -608,6 +617,7 @@
                     IsEnabled="False"/>
 
                 <Button 
+                    TabIndex="13"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     Grid.Column="1"
@@ -672,6 +682,7 @@
                     IsEnabled="False"/>
 
                 <Button 
+                    TabIndex="14"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     Grid.Column="2"
@@ -734,6 +745,7 @@
                     IsEnabled="False"/>
 
                 <Button 
+                    TabIndex="15"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     Grid.Column="0"
@@ -798,6 +810,7 @@
                     IsEnabled="False"/>
 
                 <Button 
+                    TabIndex="16"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     Grid.Column="1"
@@ -862,6 +875,7 @@
                      IsEnabled="False"/>
 
                 <Button 
+                    TabIndex="17"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     Grid.Column="2"

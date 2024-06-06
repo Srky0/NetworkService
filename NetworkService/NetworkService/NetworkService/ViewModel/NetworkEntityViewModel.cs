@@ -1,9 +1,13 @@
 ﻿using Game_Client.Helpers;
+using MVVMLight.Messaging;
+using NetworkService.Helpers;
 using NetworkService.Model;
 using NetworkService.Views;
+using Notification.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -56,6 +60,7 @@ namespace NetworkService.ViewModel
         public MyICommand DeleteCommand { get; private set; }
         public MyICommand FilterCommand { get; private set; }
         public MyICommand ResetCommand { get; private set; }
+        public MyICommand<string> AddEntityShortcutCommand { get; private set; }
 
 
         private NetworkDisplay _networkDisplay;
@@ -67,6 +72,8 @@ namespace NetworkService.ViewModel
             FilterOptions = new List<string> { "All", "Interval_Meter", "Smart_Meter" };
 
             AddCommand = new MyICommand(AddEntity);
+
+            AddEntityShortcutCommand = new MyICommand<string>(AddEntityShortcut);
 
             DeleteCommand = new MyICommand(DeleteEntity);
 
@@ -84,43 +91,50 @@ namespace NetworkService.ViewModel
 
         private void DeleteEntity()
         {
-            List<Line> line = new List<Line>();
-            if (SelectedItems != null && SelectedItems.Any())
+            Messenger.Default.Send<NotificationContent>(MainWindowViewModel.CreateYesNoToastNotification(response =>
             {
-                foreach (var item in SelectedItems.ToList())
-                {
-                    if (MainWindowViewModel.entities.Any(entity => entity.Id == item.Id))
+                if (response)
+                {    
+                    List<Line> line = new List<Line>();
+                    if (SelectedItems != null && SelectedItems.Any())
                     {
-                        MainWindowViewModel.entities.Remove(item);
-                        _networkDisplay._networkDisplayViewModel.RemoveEntityNode(item);
-
-
-                        foreach(var linija in _networkDisplay._networkDisplayViewModel.LineCollection)
+                        foreach (var item in SelectedItems.ToList())
                         {
-                            if(linija.Destination == GetCanvasIndexForEntityId(item.Id) || linija.Source == GetCanvasIndexForEntityId(item.Id))
+                            if (MainWindowViewModel.entities.Any(entity => entity.Id == item.Id))
                             {
-                                if(!line.Contains(linija))
-                                    line.Add(linija);
+                                MainWindowViewModel.entities.Remove(item);
+                                _networkDisplay._networkDisplayViewModel.RemoveEntityNode(item);
+
+
+                                foreach(var linija in _networkDisplay._networkDisplayViewModel.LineCollection)
+                                {
+                                    if(linija.Destination == GetCanvasIndexForEntityId(item.Id) || linija.Source == GetCanvasIndexForEntityId(item.Id))
+                                    {
+                                        if(!line.Contains(linija))
+                                            line.Add(linija);
+                                    }
+                                }
+
+                                foreach(var lineDelete in line)
+                                {
+                                    _networkDisplay._networkDisplayViewModel.LineCollection.Remove(lineDelete);
+                                }
+
+
+                                DeleteEntityFromCanvas(item);
                             }
                         }
 
-                        foreach(var lineDelete in line)
-                        {
-                            _networkDisplay._networkDisplayViewModel.LineCollection.Remove(lineDelete);
-                        }
-
-
-                        DeleteEntityFromCanvas(item);
+                        RestartOtherApplication("C:\\Users\\Srky\\Desktop\\PSI IUIS - PZ2 - NetworkService i Metering Simulator\\MeteringSimulator\\MeteringSimulator\\bin\\Debug\\MeteringSimulator.exe");
+                        ResetEntity();
+                        SelectedItems.Clear();
+                    }
+                    else
+                    {
+                        MainWindowViewModel.ShowToastNotification(new ToastNotification("Error", "No selected item/items for delete!", NotificationType.Error));
                     }
                 }
-                
-                ResetEntity();
-                SelectedItems.Clear();
-            }
-            else
-            {
-                //Gresaka: Izaberite sta se brise
-            }
+            }));
         }
 
         public int GetCanvasIndexForEntityId(int entityId)
@@ -150,6 +164,12 @@ namespace NetworkService.ViewModel
             }
         }
 
+        private void AddEntityShortcut(string type)
+        {
+            SelectedItemAdd = type;
+            AddEntity();
+        }
+
         private void AddEntity()
         {
             string type = "";
@@ -160,7 +180,7 @@ namespace NetworkService.ViewModel
             }
             catch (Exception)
             {
-                //GRESKU IZBACITI
+                MainWindowViewModel.ShowToastNotification(new ToastNotification("Error", "No selected type of entity to add new entity!", NotificationType.Error));
             }
 
             if (type.Equals("Interval_Meter"))
@@ -185,6 +205,9 @@ namespace NetworkService.ViewModel
                 _idS++;
                 _id++;
             }
+
+
+            RestartOtherApplication("C:\\Users\\Srky\\Desktop\\PSI IUIS - PZ2 - NetworkService i Metering Simulator\\MeteringSimulator\\MeteringSimulator\\bin\\Debug\\MeteringSimulator.exe");
             ResetEntity();
         }
 
@@ -452,6 +475,19 @@ namespace NetworkService.ViewModel
                 ShowedCollection = NetowrkEntities;
                 OnPropertyChanged(nameof(ShowedCollection));
             }
+        }
+
+        public void RestartOtherApplication(string otherAppExecutablePath)
+        {
+            // Pronađi sve instance druge aplikacije i ugasi ih
+            foreach (var process in Process.GetProcessesByName("MeteringSimulator")) // Zameni sa stvarnim imenom aplikacije bez ekstenzije
+            {
+                process.Kill();
+                process.WaitForExit();
+            }
+
+            // Pokreni novu instancu aplikacije
+            Process.Start(otherAppExecutablePath);
         }
     }
 }

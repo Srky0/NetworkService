@@ -39,7 +39,7 @@ namespace NetworkService.Model
 
         public override string ToString()
         {
-            return $"ID: {_id} Name: {_name} Type: {_type} Value: {_value}";
+            return $"ID: {_id} Name: {_name} Type: {_type} Value: {_lastValue}";
         }
     }
 }

@@ -1,5 +1,8 @@
-﻿using NetworkService.Model;
+﻿using MVVMLight.Messaging;
+using NetworkService.Helpers;
+using NetworkService.Model;
 using NetworkService.Views;
+using Notification.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,6 +18,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml;
 using Line = NetworkService.Model.Line;
 using Type = NetworkService.Model.Type;
 
@@ -161,6 +165,7 @@ namespace NetworkService.ViewModel
         }
         private void OnSelectionChanged(object selectedItem)
         {
+            dragging = false;
             if (!dragging && selectedItem is Entity SelectedEntity)
             {
                 dragging = true;
@@ -169,6 +174,91 @@ namespace NetworkService.ViewModel
                     DragDrop.DoDragDrop(Application.Current.MainWindow, draggedItem, DragDropEffects.Move);
             }
         }
+
+
+        private void OnLeftMouseButtonDown(object entity)
+        {
+            if (!dragging)
+            {
+                int index = Convert.ToInt32(entity);
+
+                if (CanvasCollection[index].Resources["taken"] != null)
+                {
+                    dragging = true;
+                    draggedItem = (Entity)(CanvasCollection[index].Resources["data"]);
+                    draggingSourceIndex = index;
+                    DragDrop.DoDragDrop(CanvasCollection[index], draggedItem, DragDropEffects.Move);
+                }
+            }
+        }
+
+        private void OnDrop(object entity)
+        {
+            bool intervalMeter = false;
+            if (draggedItem != null)
+            {
+                int index = Convert.ToInt32(entity);
+
+                if (CanvasCollection[index].Resources["taken"] == null)
+                {
+                    IDCanvasCollection[index] = draggedItem.Id.ToString();
+                    ValueCanvasCollection[index] = draggedItem.LastValue.ToString();
+
+                    window.UpdateCanvasValue(index);
+
+                    BitmapImage logo = new BitmapImage();
+                    logo.BeginInit();
+                    if (draggedItem.Type.ToString() == "Interval_Meter")
+                    {
+                        logo.UriSource = new Uri("pack://application:,,,/NetworkService;component/Images/Interval_Meter.jpg");
+                        intervalMeter = true;
+                    }
+                    else
+                    {
+                        logo.UriSource = new Uri("pack://application:,,,/NetworkService;component/Images/Smart_Meter.jpg");
+                    }
+                    logo.EndInit();
+
+                    
+                    CanvasCollection[index].Background = new ImageBrush(logo);
+                    CanvasCollection[index].Resources.Add("taken", true);
+                    CanvasCollection[index].Resources.Add("data", draggedItem);
+                    if (draggedItem.LastValue > 0.34 && draggedItem.LastValue < 2.7)
+                        BorderBrushValues[index] = "#A09D9D";
+                    else
+                        BorderBrushValues[index] = "Red";
+
+                    // PREVLACENJE IZ DRUGOG CANVASA
+                    if (draggingSourceIndex != -1)
+                    {
+                        CanvasCollection[draggingSourceIndex].Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3E3E3E"));
+                        CanvasCollection[draggingSourceIndex].Resources.Remove("taken");
+                        CanvasCollection[draggingSourceIndex].Resources.Remove("data");
+                        IDCanvasCollection[draggingSourceIndex] = "";
+                        ValueCanvasCollection[draggingSourceIndex] = "";
+                        BorderBrushValues[draggingSourceIndex] = "#A09D9D";
+
+                        UpdateLinesForCanvas(draggingSourceIndex, index);
+
+                        // Crtanje linije se prekida ako je, izmedju postavljanja tacaka, entitet pomeren na drugo polje
+                        if (sourceCanvasIndex != -1)
+                        {
+                            isLineSourceSelected = false;
+                            sourceCanvasIndex = -1;
+                            linePoint1 = new Point();
+                            linePoint2 = new Point();
+                            currentLine = new Line();
+                        }
+
+                        draggingSourceIndex = -1;
+                    }
+                    RemoveEntityNode(draggedItem);
+                }
+            }
+            dragging = false;
+        }
+
+        #region CanvasLines
 
         private void OnRightMouseButtonDown(object entity)
         {
@@ -278,88 +368,6 @@ namespace NetworkService.ViewModel
             return new Point(x, y);
         }
 
-        private void OnLeftMouseButtonDown(object entity)
-        {
-            if (!dragging)
-            {
-                int index = Convert.ToInt32(entity);
-
-                if (CanvasCollection[index].Resources["taken"] != null)
-                {
-                    dragging = true;
-                    draggedItem = (Entity)(CanvasCollection[index].Resources["data"]);
-                    draggingSourceIndex = index;
-                    DragDrop.DoDragDrop(CanvasCollection[index], draggedItem, DragDropEffects.Move);
-                }
-            }
-        }
-
-        private void OnDrop(object entity)
-        {
-            bool intervalMeter = false;
-            if (draggedItem != null)
-            {
-                int index = Convert.ToInt32(entity);
-
-                if (CanvasCollection[index].Resources["taken"] == null)
-                {
-                    IDCanvasCollection[index] = draggedItem.Id.ToString();
-                    ValueCanvasCollection[index] = draggedItem.LastValue.ToString();
-
-                    window.UpdateCanvasValue(index);
-
-                    BitmapImage logo = new BitmapImage();
-                    logo.BeginInit();
-                    if (draggedItem.Type.ToString() == "Interval_Meter")
-                    {
-                        logo.UriSource = new Uri("pack://application:,,,/NetworkService;component/Images/Interval_Meter.jpg");
-                        intervalMeter = true;
-                    }
-                    else
-                    {
-                        logo.UriSource = new Uri("pack://application:,,,/NetworkService;component/Images/Smart_Meter.jpg");
-                    }
-                    logo.EndInit();
-
-                    
-                    CanvasCollection[index].Background = new ImageBrush(logo);
-                    CanvasCollection[index].Resources.Add("taken", true);
-                    CanvasCollection[index].Resources.Add("data", draggedItem);
-                    if (draggedItem.LastValue > 0.34 && draggedItem.LastValue < 2.7)
-                        BorderBrushValues[index] = "#A09D9D";
-                    else
-                        BorderBrushValues[index] = "Red";
-
-                    // PREVLACENJE IZ DRUGOG CANVASA
-                    if (draggingSourceIndex != -1)
-                    {
-                        CanvasCollection[draggingSourceIndex].Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3E3E3E"));
-                        CanvasCollection[draggingSourceIndex].Resources.Remove("taken");
-                        CanvasCollection[draggingSourceIndex].Resources.Remove("data");
-                        IDCanvasCollection[draggingSourceIndex] = "";
-                        ValueCanvasCollection[draggingSourceIndex] = "";
-                        BorderBrushValues[draggingSourceIndex] = "#A09D9D";
-
-                        UpdateLinesForCanvas(draggingSourceIndex, index);
-
-                        // Crtanje linije se prekida ako je, izmedju postavljanja tacaka, entitet pomeren na drugo polje
-                        if (sourceCanvasIndex != -1)
-                        {
-                            isLineSourceSelected = false;
-                            sourceCanvasIndex = -1;
-                            linePoint1 = new Point();
-                            linePoint2 = new Point();
-                            currentLine = new Line();
-                        }
-
-                        draggingSourceIndex = -1;
-                    }
-                    RemoveEntityNode(draggedItem);
-                    dragging = false;
-                }
-            }
-        }
-
         private void UpdateLinesForCanvas(int sourceCanvas, int destinationCanvas)
         {
             for (int i = 0; i < LineCollection.Count; i++)
@@ -386,41 +394,51 @@ namespace NetworkService.ViewModel
             int index = Convert.ToInt32(entity);
             List<Line> line = new List<Line>();
 
-            if (CanvasCollection[index].Resources["taken"] != null)
+            Messenger.Default.Send<NotificationContent>(MainWindowViewModel.CreateYesNoToastNotification(response =>
             {
-                // Crtanje linije se prekida ako je, izmedju postavljanja tacaka, entitet uklonjen sa canvas-a
-                if (sourceCanvasIndex != -1)
+                if (response)
                 {
-                    isLineSourceSelected = false;
-                    sourceCanvasIndex = -1;
-                    linePoint1 = new Point();
-                    linePoint2 = new Point();
-                    currentLine = new Line();
-                }
-
-                DeleteLinesForCanvas(index);
-                Entity tmpEntity = (Entity)CanvasCollection[index].Resources["data"];
-                AddEntityNode(tmpEntity);
-                CanvasCollection[index].Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3E3E3E"));
-                CanvasCollection[index].Resources.Remove("taken");
-                CanvasCollection[index].Resources.Remove("data");
-                IDCanvasCollection[index] = "";
-                ValueCanvasCollection[index] = "";
-                BorderBrushValues[index] = "#A09D9D";
-                foreach (var linija in LineCollection)
-                {
-                    if (linija.Destination == GetCanvasIndexForEntityId(tmpEntity.Id) || linija.Source == GetCanvasIndexForEntityId(tmpEntity.Id))
+                    if (CanvasCollection[index].Resources["taken"] != null)
                     {
-                        if (!line.Contains(linija))
-                            line.Add(linija);
+                        // Crtanje linije se prekida ako je, izmedju postavljanja tacaka, entitet uklonjen sa canvas-a
+                        if (sourceCanvasIndex != -1)
+                        {
+                            isLineSourceSelected = false;
+                            sourceCanvasIndex = -1;
+                            linePoint1 = new Point();
+                            linePoint2 = new Point();
+                            currentLine = new Line();
+                        }
+
+                        DeleteLinesForCanvas(index);
+                        Entity tmpEntity = (Entity)CanvasCollection[index].Resources["data"];
+                        AddEntityNode(tmpEntity);
+                        CanvasCollection[index].Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3E3E3E"));
+                        CanvasCollection[index].Resources.Remove("taken");
+                        CanvasCollection[index].Resources.Remove("data");
+                        IDCanvasCollection[index] = "";
+                        ValueCanvasCollection[index] = "";
+                        BorderBrushValues[index] = "#A09D9D";
+                        foreach (var linija in LineCollection)
+                        {
+                            if (linija.Destination == GetCanvasIndexForEntityId(tmpEntity.Id) || linija.Source == GetCanvasIndexForEntityId(tmpEntity.Id))
+                            {
+                                if (!line.Contains(linija))
+                                    line.Add(linija);
+                            }
+                        }
+
+                        foreach (var lineDelete in line)
+                        {
+                            LineCollection.Remove(lineDelete);
+                        }
+                    }
+                    else
+                    {
+                        MainWindowViewModel.ShowToastNotification(new ToastNotification("Error", "No entity in canvas to delete!", NotificationType.Error));
                     }
                 }
-
-                foreach (var lineDelete in line)
-                {
-                    LineCollection.Remove(lineDelete);
-                }
-            }
+            }));
         }
         public int GetCanvasIndexForEntityId(int entityId)
         {
@@ -453,10 +471,11 @@ namespace NetworkService.ViewModel
                 LineCollection.Remove(line);
             }
         }
-
+        #endregion
 
         private void onOrganize()
         {
+            dragging = false;
             List<Entity> addedEntities = new List<Entity>();
             try
             {
@@ -487,7 +506,10 @@ namespace NetworkService.ViewModel
                                 CanvasCollection[index].Resources.Add("data", item);
                                 IDCanvasCollection[index] = item.Id.ToString();
                                 ValueCanvasCollection[index] = item.LastValue.ToString();
-                                BorderBrushValues[index] = "#A09D9D";
+                                if (item.LastValue > 0.34 && item.LastValue < 2.7)
+                                    BorderBrushValues[index] = "#A09D9D";
+                                else
+                                    BorderBrushValues[index] = "Red";
 
                                 addedEntities.Add(item);
 
@@ -496,6 +518,10 @@ namespace NetworkService.ViewModel
                             index++;
                         }
                         index = 0;
+                    }
+                    if (MainWindowViewModel.entities.Count == 0)
+                    {
+                        MainWindowViewModel.ShowToastNotification(new ToastNotification("Error", "No entities to organise!", NotificationType.Error));
                     }
                 }
             }

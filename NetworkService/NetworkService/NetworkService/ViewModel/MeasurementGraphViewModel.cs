@@ -1,4 +1,6 @@
-﻿using NetworkService.Model;
+﻿using NetworkService.Helpers;
+using NetworkService.Model;
+using Notification.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -58,7 +60,7 @@ namespace NetworkService.ViewModel
 
 
         private ObservableCollection<double> LastFiveValues { get; set; } = new ObservableCollection<double>();
-        private ObservableCollection<string> LastFiveDateTime { get; set; } = new ObservableCollection<string>();
+        public static ObservableCollection<string> LastFiveDateTime { get; set; } = new ObservableCollection<string>();
 
 
 
@@ -69,7 +71,109 @@ namespace NetworkService.ViewModel
             ShowEntityCommand = new MyICommand(ShowEntity);
         }
 
+        public void NotificationShowe()
+        {
+            if (SelectedEntity == null || SelectedEntity.Equals(""))
+            {
+                MainWindowViewModel.ShowToastNotification(new ToastNotification("Error", "No selected entity for showing!", NotificationType.Error));
+                return;
+            }
+        }
+
         public void ShowEntity()
+        {
+            if (SelectedEntity == null || SelectedEntity.Equals(""))
+            {
+                MainWindowViewModel.ShowToastNotification(new ToastNotification("Error", "No selected entity for showing!", NotificationType.Error));
+                return;
+            }
+            foreach (var entity in MeasurementGraph_entities)
+            {
+                string id = "";
+                if (SelectedEntity != null)
+                {
+                    id = SelectedEntity.Split(':')[1].TrimStart();
+                    id = id.Split(' ')[0].TrimStart();
+                }
+                if (entity.Id.ToString().Equals(id))
+                {
+                    UpdateValues(entity.Id); 
+
+                    if (LastFiveValues[0] / 22.7 < 0.34 || LastFiveValues[0] / 22.7 > 2.73)
+                    {
+                        Ellipse1Color1 = "Red";
+                    }
+                    else
+                    {
+                        Ellipse1Color1 = "White";
+                    }
+                    Ellipse1 = LastFiveValues[0];
+
+                    if (LastFiveValues[1] / 22.7 < 0.34 || LastFiveValues[1] / 22.7 > 2.73)
+                    {
+                        Ellipse1Color2 = "Red";
+                    }
+                    else
+                    {
+                        Ellipse1Color2 = "White";
+                    }
+                    Ellipse2 = LastFiveValues[1];
+
+                    if (LastFiveValues[2] / 22.7 < 0.34 || LastFiveValues[2] / 22.7 > 2.73)
+                    {
+                        Ellipse1Color3 = "Red";
+                    }
+                    else
+                    {
+                        Ellipse1Color3 = "White";
+                    }
+                    Ellipse3 = LastFiveValues[2];
+
+                    if (LastFiveValues[3] / 22.7 < 0.34 || LastFiveValues[3] / 22.7 > 2.73)
+                    {
+                        Ellipse1Color4 = "Red";
+                    }
+                    else
+                    {
+                        Ellipse1Color4 = "White";
+                    }
+                    Ellipse4 = LastFiveValues[3];
+
+                    if (LastFiveValues[4] / 22.7 < 0.34 || LastFiveValues[4] / 22.7 > 2.73)
+                    {
+                        Ellipse1Color5 = "Red";
+                    }
+                    else
+                    {
+                        Ellipse1Color5 = "White";
+                    }
+                    Ellipse5 = LastFiveValues[4];
+
+
+                    if (LastFiveDateTime[0] != DateTime.MinValue.ToString())
+                        TimeLine_TextBox1 = LastFiveDateTime[0];
+                    else
+                        TimeLine_TextBox1 = "";
+                    if (LastFiveDateTime[1] != DateTime.MinValue.ToString())
+                        TimeLine_TextBox2 = LastFiveDateTime[1];
+                    else
+                        TimeLine_TextBox2 = "";
+                    if (LastFiveDateTime[2] != DateTime.MinValue.ToString())
+                        TimeLine_TextBox3 = LastFiveDateTime[2];
+                    else
+                        TimeLine_TextBox3 = "";
+                    if (LastFiveDateTime[3] != DateTime.MinValue.ToString())
+                        TimeLine_TextBox4 = LastFiveDateTime[3];
+                    else
+                        TimeLine_TextBox4 = "";
+                    if (LastFiveDateTime[4] != DateTime.MinValue.ToString())
+                        TimeLine_TextBox5 = LastFiveDateTime[4];
+                    else
+                        TimeLine_TextBox5 = "";
+                }
+            }
+        }
+        public void UpdateEntity()
         {
             foreach (var entity in MeasurementGraph_entities)
             {
@@ -167,34 +271,6 @@ namespace NetworkService.ViewModel
                     LastFiveDateTime.Add(DateTime.MinValue.ToString());
                     LastFiveDateTime.Add(DateTime.MinValue.ToString());
                     LastFiveDateTime.Add(DateTime.MinValue.ToString());
-
-                    //int startIndex = Math.Max(0, entity.Value.Count - 5); // Calculate the starting index for the last five values
-
-                    // Add zeros to pad the list if there are fewer than five values
-                    //int count = entity.Value.Count;
-
-                    /*int j = 4;
-                    for (int i = entity.Value.Count - 1; i <= 0; i--)
-                    {
-
-                        LastFiveValues[j--] = entity.Value[i] * 22.7;
-                    }*/
-
-                    /*int j = 4;
-                    int i = entity.Value.Count - 1;
-                    while (true)
-                    {
-                        if (j < 0)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            LastFiveValues[j] = entity.Value[i] * 22.7;
-                            j--;
-                            i--;
-                        }
-                    }*/
 
                     int i = entity.Value.Count - 1;
                     for (int j = 4; j >= 0; j--)
