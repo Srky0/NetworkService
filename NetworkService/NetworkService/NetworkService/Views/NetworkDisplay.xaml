@@ -72,6 +72,8 @@
                 Height="50px"
                 FontSize="24"
                 Background="#A09D9D"
+                Cursor="Hand"
+                ToolTip="Organise all entities (F3-Organise All)"
                 TabIndex="5"
                 Command="{Binding OrganizeAllCommand}">
                 <StackPanel Orientation="Horizontal">

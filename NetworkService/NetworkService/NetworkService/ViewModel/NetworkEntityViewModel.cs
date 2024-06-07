@@ -82,15 +82,16 @@ namespace NetworkService.ViewModel
             
             ResetCommand = new MyICommand(ResetEntity);
 
+            SelectedItemAdd = "Interval_Meter";
             IsEqualsChecked = true;
             Filters.Clear();
             Filters.Add(new Filter());
-            SelectedItemFilter = "None";
+            SelectedItemFilter = "None"; ;
             SelectedTypeFilter = "All";
             ShowedCollection = NetowrkEntities;
         }
 
-        private void DeleteEntity()
+        public void DeleteEntity()
         {
             Messenger.Default.Send<NotificationContent>(MainWindowViewModel.CreateYesNoToastNotification(response =>
             {
@@ -238,8 +239,14 @@ namespace NetworkService.ViewModel
                         {
                             typeSaved = "All";
                         }
-
-                        IDText = idSaved.ToString();
+                        if (idSaved == -1)
+                        {
+                            IDText = "";
+                        }
+                        else
+                        {
+                            IDText = idSaved.ToString();
+                        }
                         IsLowerChecked = LowerSaved;
                         IsEqualsChecked = EqualsSaved;
                         IsHigherChecked = HigherSaved;
@@ -461,24 +468,32 @@ namespace NetworkService.ViewModel
 
         private void AddToFilterList(int id, bool IsLowerChecked, bool IsEqualsChecked, bool IsHigherChecked, string type)
         {
-            Filter filter = new Filter(id, IsLowerChecked, IsEqualsChecked, IsHigherChecked, type);
-            foreach(var item in Filters)
-            {
-                if(item.Name.Equals(filter.Name))
+            
+                Filter filter = new Filter(id, IsLowerChecked, IsEqualsChecked, IsHigherChecked, type);
+                foreach (var item in Filters)
                 {
-                   return;
+                    if (item.Name.Equals(filter.Name))
+                    {
+                        return;
+                    }
                 }
-            }
-            Filters.Add(filter);
+                Filters.Add(filter);
+
         }
 
-        private void ResetEntity()
+        public void ResetEntity()
         {
             if (ShowedCollection != NetowrkEntities)
             {
                 ShowedCollection = NetowrkEntities;
                 OnPropertyChanged(nameof(ShowedCollection));
             }
+            IDText = "";
+            IsLowerChecked = false;
+            IsEqualsChecked = true;
+            IsHigherChecked = false;
+            SelectedTypeFilter = "All";
+            SelectedItemFilter = "None";
         }
 
         public void RestartOtherApplication(string otherAppExecutablePath)

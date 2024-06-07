@@ -35,41 +35,47 @@ namespace NetworkService.Model
 
         public override string ToString()
         {
-            if(IsLowerChecked)
+            if(ID == -1)
             {
-                if(Type.Equals(string.Empty))
+                return$"{Type}";
+            }else
+            {
+                if(IsLowerChecked)
                 {
-                    return $"ID < {ID}";
+                    if(Type.Equals(string.Empty))
+                    {
+                        return $"ID < {ID}";
+                    }
+                    else
+                    {
+                        return $"ID < {ID} {Type}";
+                    }
+                }else if(IsEqualsChecked)
+                {
+                    if (Type.Equals(string.Empty))
+                    {
+                        return $"ID = {ID}";
+                    }
+                    else
+                    {
+                        return $"ID = {ID} {Type}";
+                    }
+                }
+                else if(IsHigherChecked)
+                {
+                    if (Type.Equals(string.Empty))
+                    {
+                        return $"ID > {ID}";
+                    }
+                    else
+                    {
+                        return $"ID > {ID} {Type}";
+                    }
                 }
                 else
                 {
-                    return $"ID < {ID} {Type}";
+                    return string.Empty;   
                 }
-            }else if(IsEqualsChecked)
-            {
-                if (Type.Equals(string.Empty))
-                {
-                    return $"ID = {ID}";
-                }
-                else
-                {
-                    return $"ID = {ID} {Type}";
-                }
-            }
-            else if(IsHigherChecked)
-            {
-                if (Type.Equals(string.Empty))
-                {
-                    return $"ID > {ID}";
-                }
-                else
-                {
-                    return $"ID > {ID} {Type}";
-                }
-            }
-            else
-            {
-                return string.Empty;   
             }
         }
     }

@@ -54,6 +54,12 @@ namespace NetworkService
             else if (e.Key == Key.F3)
             {
                 _mainWindowViewModel.networkDisplay._networkDisplayViewModel.onOrganize();
+            }else if (e.Key == Key.Delete)
+            {
+                _mainWindowViewModel.networkEntity._networkEntityViewModel.DeleteEntity();
+            }else if (e.Key == Key.F4)
+            {
+                _mainWindowViewModel.networkEntity._networkEntityViewModel.ResetEntity();
             }
         }
     }

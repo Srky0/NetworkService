@@ -59,6 +59,8 @@
                 Background="#A09D9D"
                 BorderThickness="0"
                 Command="{Binding NavCommand}"
+                ToolTip="Switch to NetworkEntitiy (LeftCtrl + D)"
+                Cursor="Hand"
                 CommandParameter="networkEntity"
                 Click="EntityButton_Click">
                 <fa5:SvgAwesome
@@ -82,6 +84,8 @@
                 BorderThickness="0"
                 Command="{Binding NavCommand}"
                 CommandParameter="measurementGraph"
+                ToolTip="Switch to NetworkMeasurmentGraph (LeftCtrl + E)"
+                Cursor="Hand"
                 Click="MeasurementButton_Click">
                 <fa5:SvgAwesome
                     x:Name="Fa5_ChartBar"
@@ -101,6 +105,8 @@
                 Width="50"
                 Background="#A09D9D"
                 BorderThickness="0"
+                ToolTip="Exit the app (LeftCtrl + Q)"
+                Cursor="Hand"
                 Command="{Binding ExitWindowCommand}"
                 CommandParameter="{Binding ElementName=MainWindowRef}">
                 <fa5:SvgAwesome

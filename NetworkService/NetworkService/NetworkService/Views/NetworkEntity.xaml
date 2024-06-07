@@ -77,6 +77,8 @@
             <Button
                 TabIndex="18"
                 Background="#A09D9D"
+                Cursor="Hand"
+                ToolTip="Select entity/entities to delete (Delete-Delete)"
                 Grid.Row="2"
                 Margin="75 0"
                 Command="{Binding DeleteCommand}">
@@ -166,6 +168,8 @@
                     TabIndex="20"
                     Command="{Binding AddCommand}"
                     Background="#A09D9D"
+                    Cursor="Hand"
+                    ToolTip="Add new Entity (F1-To add Intrval_Meter, F2-To add Smart_Meter)"
                     Grid.Row="1"
                     Grid.Column="2"
                     Margin="5 5 5 10">
@@ -329,6 +333,8 @@
                 <Button
                     TabIndex="26"
                     Background="#A09D9D"
+                    Cursor="Hand"
+                    ToolTip="Applay filter"
                     Grid.Row="3"
                     Grid.Column="2"
                     Margin="5 5 5 10"
@@ -370,7 +376,7 @@
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     ItemsSource="{Binding Filters}"
-                    SelectedItem="{Binding SelectedItemFilter}">
+                    SelectedItem="{Binding SelectedItemFilter, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Name}"/>
@@ -383,6 +389,8 @@
                     Background="#A09D9D"
                     Grid.Row="4"
                     Grid.Column="2"
+                    Cursor="Hand"
+                    ToolTip="To reset filter (F4-Reset)"
                     Margin="5 5 5 10"
                     Command="{Binding ResetCommand}">
                     <StackPanel Orientation="Horizontal">
