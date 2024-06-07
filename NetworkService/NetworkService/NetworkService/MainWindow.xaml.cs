@@ -44,14 +44,14 @@ namespace NetworkService
 
         private void Window_KeyDownOrganise(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.NumPad1)
+            if (e.Key == Key.F1)
             {
                 _mainWindowViewModel.networkEntity._networkEntityViewModel.AddEntityShortcut("Interval_Meter");
-            }else if (e.Key == Key.NumPad2)
+            }else if (e.Key == Key.F2)
             {
                 _mainWindowViewModel.networkEntity._networkEntityViewModel.AddEntityShortcut("Smart_Meter");
             }
-            else if (e.Key == Key.NumPad3)
+            else if (e.Key == Key.F3)
             {
                 _mainWindowViewModel.networkDisplay._networkDisplayViewModel.onOrganize();
             }
