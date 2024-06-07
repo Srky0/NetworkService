@@ -41,5 +41,20 @@ namespace NetworkService
             Fa5_User.Foreground = (SolidColorBrush)Application.Current.FindResource("BackgroundP");
             Fa5_ChartBar.Foreground = (SolidColorBrush)Application.Current.FindResource("BackgroundS");
         }
+
+        private void Window_KeyDownOrganise(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.NumPad1)
+            {
+                _mainWindowViewModel.networkEntity._networkEntityViewModel.AddEntityShortcut("Interval_Meter");
+            }else if (e.Key == Key.NumPad2)
+            {
+                _mainWindowViewModel.networkEntity._networkEntityViewModel.AddEntityShortcut("Smart_Meter");
+            }
+            else if (e.Key == Key.NumPad3)
+            {
+                _mainWindowViewModel.networkDisplay._networkDisplayViewModel.onOrganize();
+            }
+        }
     }
 }

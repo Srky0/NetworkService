@@ -14,7 +14,8 @@
         WindowStartupLocation="CenterScreen"
         Height="846" Width="1760"
         Background="#3E3E3E"
-        Name="MainWindowRef">
+        Name="MainWindowRef"
+        KeyDown="Window_KeyDownOrganise">
 
     <Window.InputBindings>
         <KeyBinding Key="Q" Modifiers="Control" Command="{Binding ExitWindowCommand}" CommandParameter="{Binding ElementName=MainWindowRef}"/>

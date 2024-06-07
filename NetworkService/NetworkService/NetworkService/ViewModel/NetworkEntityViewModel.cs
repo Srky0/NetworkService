@@ -40,8 +40,10 @@ namespace NetworkService.ViewModel
         private ObservableCollection<Entity> _showedCollection;
         private ObservableCollection<Entity> _selectedItems;
         private List<string> _filterOptions;
+        private List<string> _addTypes;
 
         public List<string> FilterOptions { get { return _filterOptions; } set { _filterOptions = value; OnPropertyChanged(nameof(FilterOptions)); } }
+        public List<string> AddType { get { return _addTypes; } set { _addTypes = value; OnPropertyChanged(nameof(AddType)); } }
         public ObservableCollection<Entity> SelectedItems { get { return _selectedItems; } set { _selectedItems = value; OnPropertyChanged(nameof(SelectedItems)); } }
         public ObservableCollection<Entity> ShowedCollection { get { return _showedCollection; } set { _showedCollection = value; OnPropertyChanged(nameof(ShowedCollection)); } }
         public static ObservableCollection<Entity> NetowrkEntities { get; set; } = MainWindowViewModel.entities;
@@ -60,7 +62,6 @@ namespace NetworkService.ViewModel
         public MyICommand DeleteCommand { get; private set; }
         public MyICommand FilterCommand { get; private set; }
         public MyICommand ResetCommand { get; private set; }
-        public MyICommand<string> AddEntityShortcutCommand { get; private set; }
 
 
         private NetworkDisplay _networkDisplay;
@@ -71,9 +72,9 @@ namespace NetworkService.ViewModel
 
             FilterOptions = new List<string> { "All", "Interval_Meter", "Smart_Meter" };
 
-            AddCommand = new MyICommand(AddEntity);
+            AddType = new List<string> { "Interval_Meter", "Smart_Meter" };
 
-            AddEntityShortcutCommand = new MyICommand<string>(AddEntityShortcut);
+            AddCommand = new MyICommand(AddEntity);
 
             DeleteCommand = new MyICommand(DeleteEntity);
 
@@ -164,7 +165,7 @@ namespace NetworkService.ViewModel
             }
         }
 
-        private void AddEntityShortcut(string type)
+        public void AddEntityShortcut(string type)
         {
             SelectedItemAdd = type;
             AddEntity();
@@ -173,14 +174,13 @@ namespace NetworkService.ViewModel
         private void AddEntity()
         {
             string type = "";
+            
+            type = SelectedItemAdd;
 
-            try
-            {
-                type = SelectedItemAdd.Split(':')[1].TrimStart();
-            }
-            catch (Exception)
+            if(type == null)
             {
                 MainWindowViewModel.ShowToastNotification(new ToastNotification("Error", "No selected type of entity to add new entity!", NotificationType.Error));
+                return;
             }
 
             if (type.Equals("Interval_Meter"))
@@ -193,6 +193,8 @@ namespace NetworkService.ViewModel
                 Count = MainWindowViewModel.entities.Count;
                 _idI++;
                 _id++;
+                RestartOtherApplication("C:\\Users\\Srky\\Desktop\\PSI IUIS - PZ2 - NetworkService i Metering Simulator\\MeteringSimulator\\MeteringSimulator\\bin\\Debug\\MeteringSimulator.exe");
+                ResetEntity();
             }
             else if (type.Equals("Smart_Meter"))
             {
@@ -204,11 +206,13 @@ namespace NetworkService.ViewModel
                 Count = MainWindowViewModel.entities.Count;
                 _idS++;
                 _id++;
+                RestartOtherApplication("C:\\Users\\Srky\\Desktop\\PSI IUIS - PZ2 - NetworkService i Metering Simulator\\MeteringSimulator\\MeteringSimulator\\bin\\Debug\\MeteringSimulator.exe");
+                ResetEntity();
             }
-
-
-            RestartOtherApplication("C:\\Users\\Srky\\Desktop\\PSI IUIS - PZ2 - NetworkService i Metering Simulator\\MeteringSimulator\\MeteringSimulator\\bin\\Debug\\MeteringSimulator.exe");
-            ResetEntity();
+            else
+            {
+                MainWindowViewModel.ShowToastNotification(new ToastNotification("Error", "No selected type of entity to add new entity!", NotificationType.Error));
+            }
         }
 
         private void FilterEntity()

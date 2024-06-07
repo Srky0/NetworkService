@@ -29,7 +29,5 @@ namespace NetworkService.Views
             _networkDisplayViewModel = new NetworkDisplayViewModel(mainWindow);
             DataContext = _networkDisplayViewModel;
         }
-
-        
     }
 }

@@ -473,7 +473,7 @@ namespace NetworkService.ViewModel
         }
         #endregion
 
-        private void onOrganize()
+        public void onOrganize()
         {
             dragging = false;
             List<Entity> addedEntities = new List<Entity>();
